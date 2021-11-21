@@ -6,9 +6,10 @@ export interface MenuParam {
   url: string; // 链接路径
   parent: number | null; // 父级ID
   desc: string; // 描述
-  sorts: number; // 排序编号
+  sorts?: number; // 排序编号
   conditions: number; // 状态，1启用，-1禁用
   children?: Menu[]; // 子菜单
+  powers?: Power[]; // 菜单功能
 }
 
 // 菜单对象
@@ -27,21 +28,25 @@ export interface RoleParam {
   id?: number; // ID,添加时可以不传id
   title: string; // 角色名
   desc: string; // 描述
-  sorts: number; // 排序编号
+  sorts?: number; // 排序编号
   conditions: number; // 状态，1启用，-1禁用
-  menuAndPowers?: MenuAndPower[]; // 添加时可以不传菜单和权限
+  menuIds?: number[]; // 当前角色拥有的菜单Id
+  powerIds?: number[]; // 当前角色拥有的功能Id
+  apiIds?: number[]; // 当前角色拥有apiId
 }
 
 // 角色对象
 export interface Role extends RoleParam {
   id: number; // ID
-  menuAndPowers: MenuAndPower[]; // 当前角色拥有的菜单id和权限id
+  menus: Menu[]; // 当前角色拥有的菜单
+  powers: Power[]; // 当前角色拥有的功能
+  apis: Api[]; // 当前角色拥有api
 }
 
 // 权限添加修改时的参数类型
 export interface PowerParam {
   id?: number; // ID, 添加时可以没有id
-  menu: number; // 所属的菜单
+  menuId: number; // 所属的菜单
   title: string; // 标题
   code: string; // CODE
   desc: string; // 描述
@@ -51,6 +56,21 @@ export interface PowerParam {
 
 // 权限对象
 export interface Power extends PowerParam {
+  id: number; // ID
+}
+
+// api对象
+export interface ApiParam {
+  id?: number; // ID, 添加时可以没有id
+  name: number; // api名称
+  url: string; // url
+  method: string; // 请求方式
+  desc: string; // 描述
+  conditions: number; // 状态 1启用，-1禁用
+}
+
+// 权限对象
+export interface Api extends ApiParam {
   id: number; // ID
 }
 
@@ -110,3 +130,16 @@ export type Res =
       message?: string; // 返回的消息
     }
   | undefined;
+
+export interface Resp {
+  code: number;
+  data: any;
+  error: string;
+  success: boolean;
+  message: string;
+}
+
+export interface LoginRes {
+  code: number;
+  token: string;
+}

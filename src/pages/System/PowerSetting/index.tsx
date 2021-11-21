@@ -72,15 +72,17 @@ type Props = {
 // CSS
 // ==================
 import "./index.less";
+import { Resp } from "@/models/index.type";
 
 // ==================
 // 本组件
 // ==================
-function PowerAdminContainer(props: Props) {
+function PowerSettingContainer(props: Props) {
   const dispatch = useDispatch<Dispatch>();
   const p = useSelector((state: RootState) => state.app.powersCode);
   const roles = useSelector((state: RootState) => state.sys.roles);
   const userinfo = useSelector((state: RootState) => state.app.userinfo);
+
   const [form] = Form.useForm();
 
   const [data, setData] = useState<Power[]>([]); // 当前所选菜单下的权限数据
@@ -106,25 +108,19 @@ function PowerAdminContainer(props: Props) {
       dispatch.sys.getMenus();
     }
     dispatch.sys.getAllRoles();
-    getData();
   });
 
   // 根据所选菜单id获取其下权限数据
   const getData = async (menuId: string | number | null = null) => {
-    if (!p.includes("power:query")) {
-      return;
-    }
-
     setLoading(true);
-    const params = {
-      menuId: Number(menuId) || null,
-    };
-
     try {
-      const res: Res = await dispatch.sys.getPowerDataByMenuId(params);
-
-      if (res && res.status === 200) {
-        setData(res.data);
+      if (menuId) {
+        const res: Resp | undefined = await dispatch.sys.getPowerDataByMenuId(
+          menuId
+        );
+        if (res && res.success) {
+          setData(res.data);
+        }
       }
     } finally {
       setLoading(false);
@@ -179,11 +175,15 @@ function PowerAdminContainer(props: Props) {
       data && data.id
         ? roles
             .filter((item) => {
-              const theMenuPower = item.menuAndPowers?.find(
-                (item2) => item2.menuId === data.menu
+              // 找到拥有选中功能的角色
+              const theMenuPower = item.menus?.find(
+                (item2) => item2.id === data.menuId
               );
               if (theMenuPower) {
-                return theMenuPower.powers.includes(data.id);
+                const powerIds = (theMenuPower.powers || []).map(
+                  (item) => item.id
+                );
+                return powerIds.includes(data.id);
               }
               return false;
             })
@@ -226,7 +226,7 @@ function PowerAdminContainer(props: Props) {
       const params: PowerParam = {
         title: values.formTitle,
         code: values.formCode,
-        menu: treeSelect.id || 0,
+        menuId: treeSelect.id || 0,
         sorts: values.formSorts,
         desc: values.formDesc,
         conditions: values.formConditions,
@@ -308,7 +308,7 @@ function PowerAdminContainer(props: Props) {
   const setPowersByRoleIds = (id: number, roleIds: number[]) => {
     const params = roles.map((item) => {
       const powersTemp = new Set(
-        item.menuAndPowers.reduce((a, b) => [...a, ...b.powers], [])
+        item.menus.reduce((a, b) => [...a, ...(b.powers || [])], [])
       );
       if (roleIds.includes(item.id)) {
         powersTemp.add(id);
@@ -317,7 +317,7 @@ function PowerAdminContainer(props: Props) {
       }
       return {
         id: item.id,
-        menus: item.menuAndPowers.map((item) => item.menuId),
+        menus: item.menus.map((item) => item.id),
         powers: Array.from(powersTemp),
       };
     });
@@ -434,11 +434,11 @@ function PowerAdminContainer(props: Props) {
 
   // 构建表格数据
   const tableData = useMemo(() => {
-    return data.map((item, index) => {
+    return data?.map((item, index) => {
       return {
         key: index,
         id: item.id,
-        menu: item.menu,
+        menuId: item.menuId,
         title: item.title,
         code: item.code,
         desc: item.desc,
@@ -586,4 +586,4 @@ function PowerAdminContainer(props: Props) {
   );
 }
 
-export default PowerAdminContainer;
+export default PowerSettingContainer;

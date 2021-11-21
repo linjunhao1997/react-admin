@@ -307,7 +307,7 @@ const roles = [
     desc: "超级管理员拥有所有权限",
     sorts: 1,
     conditions: 1,
-    menuAndPowers: [
+    menus: [
       { menuId: 1, powers: [] },
       { menuId: 2, powers: [] },
       { menuId: 3, powers: [1, 2, 3, 4, 5] },
@@ -322,7 +322,7 @@ const roles = [
     desc: "普通管理员",
     sorts: 2,
     conditions: 1,
-    menuAndPowers: [
+    menus: [
       { menuId: 1, powers: [] },
       { menuId: 2, powers: [] },
       { menuId: 3, powers: [3] },
@@ -337,7 +337,7 @@ const roles = [
     desc: "运维人员不能删除对象",
     sorts: 3,
     conditions: 1,
-    menuAndPowers: [
+    menus: [
       { menuId: 1, powers: [] },
       { menuId: 2, powers: [] },
       { menuId: 3, powers: [3] },
@@ -560,8 +560,8 @@ const getRoleById = function (p) {
 const addRole = function (p) {
   // const p = JSON.parse(request.body);
   p.id = ++id_sequence;
-  if (!p.menuAndPowers) {
-    p.menuAndPowers = [];
+  if (!p.menus) {
+    p.menus = [];
   }
   roles.push(p);
   return { status: 200, data: null, message: "success" };
@@ -660,7 +660,7 @@ const setPowersByRoleId = function (p) {
       }
     });
 
-    roles[oldIndex].menuAndPowers = pow;
+    roles[oldIndex].menus = pow;
     return { status: 200, data: null, message: "success" };
   } else {
     return { status: 204, data: null, message: "未找到该条数据" };
@@ -695,7 +695,7 @@ const setPowersByRoleIds = function (ps) {
           }
         }
       });
-      roles[oldIndex].menuAndPowers = pow;
+      roles[oldIndex].menus = pow;
     }
   });
   return { status: 200, data: null, message: "success" };

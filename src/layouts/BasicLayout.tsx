@@ -8,8 +8,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { Route, Redirect } from "react-router-dom";
 import CacheRoute, { CacheSwitch } from "react-router-cache-route";
 import loadable from "@loadable/component";
-import { Layout, message } from "antd";
-
+import { ConfigProvider, Layout, message } from "antd";
+import zhCN from "antd/es/locale/zh_CN";
 // ==================
 // 自定义的东西
 // ==================
@@ -33,14 +33,24 @@ const { Content } = Layout;
 // ==================
 // 异步加载各路由模块
 // ==================
-const [NotFound, NoPower, Home, MenuAdmin, PowerAdmin, RoleAdmin, UserAdmin] = [
+const [
+  NotFound,
+  NoPower,
+  Home,
+  UserSetting,
+  RoleSetting,
+  PowerSetting,
+  MenuSetting,
+  ApiSetting,
+] = [
   () => import(`../pages/ErrorPages/404`),
   () => import(`../pages/ErrorPages/401`),
   () => import(`../pages/Home`),
-  () => import(`../pages/System/MenuAdmin`),
-  () => import(`../pages/System/PowerAdmin`),
-  () => import(`../pages/System/RoleAdmin`),
-  () => import(`../pages/System/UserAdmin`),
+  () => import(`../pages/System/UserSetting`),
+  () => import(`../pages/System/RoleSetting`),
+  () => import(`../pages/System/PowerSetting`),
+  () => import(`../pages/System/MenuSetting`),
+  () => import(`../pages/System/ApiSetting`),
 ].map((item) => {
   return loadable(item as any, {
     fallback: <Loading />,
@@ -138,42 +148,49 @@ function BasicLayoutCom(props: Props): JSX.Element {
           location={props.location}
           history={props.history}
         /> */}
-        <Content className="content">
-          <ErrorBoundary location={props.location}>
-            <CacheSwitch>
-              <Redirect exact from="/" to="/home" />
-              <Route
-                exact
-                path="/home"
-                render={(props) => onEnter(Home, props)}
-              />
+        <ConfigProvider locale={zhCN}>
+          <Content className="content">
+            <ErrorBoundary location={props.location}>
+              <CacheSwitch>
+                <Redirect exact from="/" to="/home" />
+                <Route
+                  exact
+                  path="/home"
+                  render={(props) => onEnter(Home, props)}
+                />
+                {/*<!-- 使用CacheRoute可以缓存该页面，类似Keep-alive -->*/}
+                <CacheRoute
+                  exact
+                  path="/system/useradmin"
+                  render={(props) => onEnter(UserSetting, props)}
+                />
+                <CacheRoute
+                  exact
+                  path="/system/roleadmin"
+                  render={(props) => onEnter(RoleSetting, props)}
+                />
+                <CacheRoute
+                  exact
+                  path="/system/poweradmin"
+                  render={(props) => onEnter(PowerSetting, props)}
+                />
+                <CacheRoute
+                  exact
+                  path="/system/menuadmin"
+                  render={(props) => onEnter(MenuSetting, props)}
+                />
+                <CacheRoute
+                  exact
+                  path="/system/apiadmin"
+                  render={(props) => onEnter(ApiSetting, props)}
+                />
+                <Route exact path="/nopower" component={NoPower} />
+                <Route component={NotFound} />
+              </CacheSwitch>
+            </ErrorBoundary>
+          </Content>
+        </ConfigProvider>
 
-              <Route
-                exact
-                path="/system/menuadmin"
-                render={(props) => onEnter(MenuAdmin, props)}
-              />
-              <Route
-                exact
-                path="/system/poweradmin"
-                render={(props) => onEnter(PowerAdmin, props)}
-              />
-              <Route
-                exact
-                path="/system/roleadmin"
-                render={(props) => onEnter(RoleAdmin, props)}
-              />
-              {/*<!-- 使用CacheRoute可以缓存该页面，类似Keep-alive -->*/}
-              <CacheRoute
-                exact
-                path="/system/useradmin"
-                render={(props) => onEnter(UserAdmin, props)}
-              />
-              <Route exact path="/nopower" component={NoPower} />
-              <Route component={NotFound} />
-            </CacheSwitch>
-          </ErrorBoundary>
-        </Content>
         <Footer />
       </Layout>
     </Layout>

@@ -20,7 +20,15 @@ import LogoImg from "@/assets/logo.png";
 // 类型声明
 // ==================
 import { RootState, Dispatch } from "@/store";
-import { Role, Menu, Power, UserBasicInfo, Res } from "@/models/index.type";
+import {
+  Role,
+  Menu,
+  Power,
+  UserBasicInfo,
+  Res,
+  LoginRes,
+  Resp,
+} from "@/models/index.type";
 import { CheckboxChangeEvent } from "antd/lib/checkbox";
 
 import { History } from "history";
@@ -85,58 +93,54 @@ function LoginContainer(props: Props): JSX.Element {
     async (username, password) => {
       let userBasicInfo: UserBasicInfo | null = null;
       let roles: Role[] = [];
-      let menus: Menu[] = [];
-      let powers: Power[] = [];
+      const menus: Menu[] = [];
+      const powers: Power[] = [];
+      try {
+        /** 1.登录 （返回信息中有该用户拥有的角色id） **/
+        const res1: LoginRes | undefined = await dispatch.app.onLogin({
+          username,
+          password,
+        });
+        sessionStorage.setItem("token", res1?.token || "");
+        const res2: Resp | undefined = await dispatch.sys.onSelf();
 
-      /** 1.登录 （返回信息中有该用户拥有的角色id） **/
-      const res1: Res | undefined = await dispatch.app.onLogin({
-        username,
-        password,
-      });
-      if (!res1 || res1.status !== 200 || !res1.data) {
-        // 登录失败
-        return res1;
+        userBasicInfo = res2?.data;
+
+        /** 2.获取角色信息 **/
+        roles = res2?.data.roles;
+        /** 3.获取菜单信息 **/
+        const menuInfo = roles.reduce((a, b) => [...a, ...b.menus], []);
+        const menuMap = {};
+        menuInfo.forEach((item) => {
+          menuMap[item?.id] = item;
+        });
+        const menuIds = Array.from(new Set(menuInfo.map((item) => item.id)));
+        menuIds.forEach((id) => {
+          if (menuMap[id]) {
+            menus.push(menuMap[id]);
+          }
+        });
+        console.log("menus:", menus);
+        /** 4.根据权限id，获取权限信息 **/
+        const powerInfo = roles.reduce((a, b) => [...a, ...b.powers], []);
+        const powerMap = {};
+        powerInfo.forEach((item) => {
+          powerMap[item?.id] = item;
+        });
+        const powerIds = Array.from(new Set(powerInfo.map((item) => item.id)));
+        powerIds.forEach((id) => {
+          if (powerMap[id]) {
+            powers.push(powerMap[id]);
+          }
+        });
+        console.log("powers:", powers);
+      } catch (e) {
+        console.log("error", e);
+        return {
+          status: 400,
+          data: { userBasicInfo: null, roles, menus, powers },
+        };
       }
-
-      userBasicInfo = res1.data;
-
-      /** 2.根据角色id获取角色信息 (角色信息中有该角色拥有的菜单id和权限id) **/
-      const res2 = await dispatch.sys.getRoleById({
-        id: (userBasicInfo as UserBasicInfo).roles,
-      });
-      if (!res2 || res2.status !== 200) {
-        // 角色查询失败
-        return res2;
-      }
-
-      roles = res2.data.filter((item: Role) => item.conditions === 1); // conditions: 1启用 -1禁用
-
-      /** 3.根据菜单id 获取菜单信息 **/
-      const menuAndPowers = roles.reduce(
-        (a, b) => [...a, ...b.menuAndPowers],
-        []
-      );
-      const res3 = await dispatch.sys.getMenusById({
-        id: Array.from(new Set(menuAndPowers.map((item) => item.menuId))),
-      });
-      if (!res3 || res3.status !== 200) {
-        // 查询菜单信息失败
-        return res3;
-      }
-
-      menus = res3.data.filter((item: Menu) => item.conditions === 1);
-
-      /** 4.根据权限id，获取权限信息 **/
-      const res4 = await dispatch.sys.getPowerById({
-        id: Array.from(
-          new Set(menuAndPowers.reduce((a, b) => [...a, ...b.powers], []))
-        ),
-      });
-      if (!res4 || res4.status !== 200) {
-        // 权限查询失败
-        return res4;
-      }
-      powers = res4.data.filter((item: Power) => item.conditions === 1);
       return { status: 200, data: { userBasicInfo, roles, menus, powers } };
     },
     [dispatch.sys, dispatch.app]
@@ -166,14 +170,15 @@ function LoginContainer(props: Props): JSX.Element {
           "userinfo",
           tools.compile(JSON.stringify(res.data))
         );
+        console.log("userinfo", res.data);
         await dispatch.app.setUserInfo(res.data);
         props.history.replace("/"); // 跳转到主页
       } else {
-        message.error(res?.message ?? "登录失败");
         setLoading(false);
       }
     } catch (e) {
       // 验证未通过
+      setLoading(false);
     }
   };
 

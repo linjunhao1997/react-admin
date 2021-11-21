@@ -69,7 +69,7 @@ import "./index.less";
 // ==================
 // 本组件
 // ==================
-function MenuAdminContainer(props: Props) {
+function MenuSettingContainer(props: Props) {
   const p = useSelector((state: RootState) => state.app.powersCode);
   const dispatch = useDispatch<Dispatch>();
 
@@ -102,9 +102,9 @@ function MenuAdminContainer(props: Props) {
     }
     setLoading(true);
     try {
-      const res = await dispatch.sys.getMenus();
-      if (res && res.status === 200) {
-        setData(res.data);
+      const resp = await dispatch.sys.getMenus();
+      if (resp && resp.success) {
+        setData(resp.data);
       }
     } finally {
       setLoading(false);
@@ -532,4 +532,4 @@ function MenuAdminContainer(props: Props) {
   );
 }
 
-export default MenuAdminContainer;
+export default MenuSettingContainer;

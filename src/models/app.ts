@@ -13,7 +13,7 @@ import {
   MenuAndPower,
   UserInfo,
   AppState,
-  Res,
+  Res, LoginRes,
 } from "./index.type";
 
 const defaultState: AppState = {
@@ -54,7 +54,7 @@ export default {
      * */
     async onLogin(params: { username: string; password: string }) {
       try {
-        const res: Res = await axios.post("/api/login", params);
+        const res: LoginRes = await axios.post("/auth/v1/login", params);
         return res;
       } catch (err) {
         message.error("网络错误，请重试");
@@ -107,12 +107,12 @@ export default {
       );
 
       /** 3.根据菜单id 获取菜单信息 **/
-      const menuAndPowers = roles.reduce(
-        (a, b) => [...a, ...b.menuAndPowers],
+      const menu = roles.reduce(
+        (a, b) => [...a, ...b.menus],
         [] as MenuAndPower[]
       );
       const res3: Res | undefined = await dispatch.sys.getMenusById({
-        id: Array.from(new Set(menuAndPowers.map((item) => item.menuId))),
+        id: Array.from(new Set(menu.map((item) => item.menuId))),
       });
       if (!res3 || res3.status !== 200) {
         // 查询菜单信息失败
@@ -126,7 +126,7 @@ export default {
       const res4: Res | undefined = await dispatch.sys.getPowerById({
         id: Array.from(
           new Set(
-            menuAndPowers.reduce((a, b) => [...a, ...b.powers], [] as number[])
+            menu.reduce((a, b) => [...a, ...b.powers], [] as number[])
           )
         ),
       });
