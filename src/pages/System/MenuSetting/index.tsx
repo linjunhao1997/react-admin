@@ -65,6 +65,7 @@ import { RootState, Dispatch } from "@/store";
 // CSS
 // ==================
 import "./index.less";
+import { Resp } from "@/models/index.type";
 
 // ==================
 // 本组件
@@ -213,8 +214,8 @@ function MenuSettingContainer(props: Props) {
       } else {
         try {
           params.id = modal?.nowData?.id;
-          const res = await dispatch.sys.upMenu(params);
-          if (res && res.status === 200) {
+          const res: Resp | undefined = await dispatch.sys.upMenu(params);
+          if (res && res.success) {
             message.success("修改成功");
             getData();
             onClose();
@@ -402,7 +403,7 @@ function MenuSettingContainer(props: Props) {
             onSelect={onTreeSelect}
             selectedKeys={[String(treeSelect.id)]}
             treeData={sourceData}
-          ></Tree>
+          />
         </div>
       </div>
       <div className="r">
@@ -489,19 +490,6 @@ function MenuSettingContainer(props: Props) {
               rows={4}
               disabled={modal.operateType === "see"}
               autoSize={{ minRows: 2, maxRows: 6 }}
-            />
-          </Form.Item>
-          <Form.Item
-            label="排序"
-            name="formSorts"
-            {...formItemLayout}
-            rules={[{ required: true, message: "请输入排序号" }]}
-          >
-            <InputNumber
-              min={0}
-              max={99999}
-              style={{ width: "100%" }}
-              disabled={modal.operateType === "see"}
             />
           </Form.Item>
           <Form.Item

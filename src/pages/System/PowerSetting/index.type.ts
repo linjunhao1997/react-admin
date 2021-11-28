@@ -1,7 +1,7 @@
 /** 当前页面所需所有类型声明 **/
 
 import { PowerTreeDefault } from "@/components/TreeChose/PowerTreeTable";
-import { Power } from "@/models/index.type";
+import { Menu, Power, Role } from "@/models/index.type";
 export type {
   Menu,
   UserInfo,

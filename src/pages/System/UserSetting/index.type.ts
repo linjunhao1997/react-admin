@@ -18,7 +18,7 @@ export type TableRecordData = {
   desc: string; // 描述
   conditions: number; // 是否启用 1启用 -1禁用
   control?: number; // 控制，传入的ID
-  roles?: number[]; // 拥有的所有权限ID
+  roles?: Role[]; // 拥有的所有权限ID
 };
 
 export type Page = {

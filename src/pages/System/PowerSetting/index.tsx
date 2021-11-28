@@ -166,6 +166,7 @@ function PowerSettingContainer(props: Props) {
 
   // 新增&修改 模态框出现
   const onModalShow = (data: TableRecordData | null, type: operateType) => {
+    console.log("data", data);
     setModal({
       modalShow: true,
       nowData: data,
@@ -202,6 +203,7 @@ function PowerSettingContainer(props: Props) {
           formCode: data?.code,
           formSorts: data?.sorts,
           formTitle: data?.title,
+          formRoleIds: data?.roleIds,
         });
       }
     });
@@ -230,6 +232,7 @@ function PowerSettingContainer(props: Props) {
         sorts: values.formSorts,
         desc: values.formDesc,
         conditions: values.formConditions,
+        roleIds: values.formRoleIds,
       };
       setModal({
         modalLoading: true,
@@ -237,13 +240,13 @@ function PowerSettingContainer(props: Props) {
       if (modal.operateType === "add") {
         // 新增
         try {
-          const res: Res = await dispatch.sys.addPower(params);
-          if (res && res.status === 200) {
-            message.success("添加成功");
+          const res: Resp | undefined = await dispatch.sys.addPower(params);
+          if (res && res.success) {
+            message.success(res?.message ?? "添加成功");
             getData(treeSelect.id);
             onClose();
 
-            await setPowersByRoleIds(res.data.id, rolesCheckboxChose);
+            //await setPowersByRoleIds(res.data.id, rolesCheckboxChose);
             dispatch.app.updateUserInfo();
             dispatch.sys.getAllRoles();
           } else {
@@ -263,13 +266,13 @@ function PowerSettingContainer(props: Props) {
           }
           params.id = modal.nowData.id;
 
-          const res: Res = await dispatch.sys.upPower(params);
-          if (res && res.status === 200) {
-            message.success("修改成功");
+          const res: Resp | undefined = await dispatch.sys.upPower(params);
+          if (res && res.success) {
+            message.success(res?.message ?? "修改成功");
             getData(treeSelect.id);
             onClose();
 
-            await setPowersByRoleIds(params.id, rolesCheckboxChose);
+            //await setPowersByRoleIds(params.id, rolesCheckboxChose);
             dispatch.sys.getAllRoles();
             dispatch.app.updateUserInfo();
           } else {
@@ -444,6 +447,7 @@ function PowerSettingContainer(props: Props) {
         desc: item.desc,
         sorts: item.sorts,
         conditions: item.conditions,
+        roleIds: item.roles.map((item) => item.id),
         serial: index + 1,
       };
     });
@@ -570,7 +574,7 @@ function PowerSettingContainer(props: Props) {
               </Option>
             </Select>
           </Form.Item>
-          <Form.Item label="赋予" {...formItemLayout}>
+          <Form.Item label="赋予" {...formItemLayout} name="formRoleIds">
             <Checkbox.Group
               disabled={modal.operateType === "see"}
               options={rolesCheckboxData}

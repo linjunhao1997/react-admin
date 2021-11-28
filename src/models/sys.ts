@@ -95,7 +95,10 @@ export default {
      * **/
     async upMenu(params: MenuParam) {
       try {
-        const res: Res = await axios.post("/api/upmenu", params);
+        const res: Resp = await axios.patch(
+          `/api/v1/sysMenus/${params.id}`,
+          params
+        );
         return res;
       } catch (err) {
         message.error("网络错误，请重试");
@@ -107,7 +110,7 @@ export default {
      * **/
     async delMenu(params: { id: number }) {
       try {
-        const res: Res = await axios.post("/api/delmenu", params);
+        const res: Res = await axios.delete(`/api/v1/sysMenus/${params.id}`);
         return res;
       } catch (err) {
         message.error("网络错误，请重试");
@@ -164,7 +167,10 @@ export default {
      * **/
     async addPower(params: PowerParam) {
       try {
-        const res: Res = await axios.post("/api/addpower", params);
+        const res: Resp = await axios.post(
+          `/api/v1/sysPowers/${params.id}`,
+          params
+        );
         return res;
       } catch (err) {
         message.error("网络错误，请重试");
@@ -177,7 +183,10 @@ export default {
      * **/
     async upPower(params: PowerParam) {
       try {
-        const res: Res = await axios.post("/api/uppower", params);
+        const res: Resp = await axios.patch(
+          `/api/v1/sysPowers/${params.id}`,
+          params
+        );
         return res;
       } catch (err) {
         message.error("网络错误，请重试");
@@ -250,7 +259,7 @@ export default {
      * **/
     async upRole(params: RoleParam) {
       try {
-        const res: Resp = await axios.post(
+        const res: Resp = await axios.patch(
           `/api/v1/sysRoles/${params.id}`,
           params
         );
@@ -397,7 +406,7 @@ export default {
      * **/
     async delUser(params: { id: number }) {
       try {
-        const res: Res = await axios.post("/api/delUser", params);
+        const res: Resp = await axios.delete(`/api/v1/sysUsers/${params.id}`);
         return res;
       } catch (err) {
         message.error("网络错误，请重试");
@@ -459,11 +468,22 @@ export default {
     },
 
     /**
-     * 删除角色
+     * 删除Api
      * **/
     async delApi(params: { id: number }) {
       try {
         const res: Res = await axios.delete(`/api/v1/sysApis/${params.id}`);
+        return res;
+      } catch (err) {
+        message.error("网络错误，请重试");
+      }
+      return;
+    },
+
+    /** 获取所有api **/
+    async getAllApis(): Promise<Resp | undefined> {
+      try {
+        const res: Resp = await axios.get("/api/v1/sysApis");
         return res;
       } catch (err) {
         message.error("网络错误，请重试");

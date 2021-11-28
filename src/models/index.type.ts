@@ -52,11 +52,13 @@ export interface PowerParam {
   desc: string; // 描述
   sorts: number; // 排序
   conditions: number; // 状态 1启用，-1禁用
+  roleIds: number[]; // 属于的角色id
 }
 
 // 权限对象
 export interface Power extends PowerParam {
   id: number; // ID
+  roles: Role[];
 }
 
 // api对象
@@ -102,6 +104,7 @@ export interface UserBasicInfoParam {
   phone?: string | number; // 手机
   email?: string; // 邮箱
   desc?: string; // 描述
+  roleIds?: number[]; // 角色
   conditions?: number; // 状态 1启用，-1禁用
 }
 

@@ -21,18 +21,28 @@ import {
 import { useAntdTable } from "ahooks";
 import { getTableData } from "@/util/common";
 import React, { useState } from "react";
-import { Resp, RoleParam } from "@/models/index.type";
+import { Api, Resp, RoleParam } from "@/models/index.type";
 import { ControlledMenu, MenuItem, useMenuState } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/index.css";
 import { useMount, useSetState } from "react-use";
 import { ModalType, operateType } from "@/pages/System/RoleSetting/index.type";
-import { PlusCircleOutlined } from "@ant-design/icons";
+import { PlusCircleOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import { PowerTreeInfo } from "@/pages/System/RoleSetting/index.type";
 import PowerTreeCom, {
   PowerTreeDefault,
 } from "@/components/TreeChose/PowerTreeTable";
 import ApiSelect from "@/components/Select/ApiSelect";
 const { Option } = Select;
+const { confirm } = Modal;
+
+const mapTag = {
+  PATCH: "#D38042",
+  DELETE: "#a41e22",
+  GET: "#0f6ab4",
+  POST: "#10a54a",
+  PUT: "#c5862b",
+  HEAD: "#ffd20f",
+};
 
 function RoleSettingContainer(props: Props): JSX.Element {
   const dispatch = useDispatch<Dispatch>();
@@ -55,9 +65,16 @@ function RoleSettingContainer(props: Props): JSX.Element {
     powerTreeDefault: { menus: [], powers: [] },
   });
 
+  const [apis, setApis] = useState([]);
+
   // 生命周期 - 首次加载组件时触发
   useMount(() => {
     getPowerTreeData();
+    dispatch.sys.getAllApis().then((resp) => {
+      if (resp?.success) {
+        setApis(resp.data);
+      }
+    });
   });
 
   // 函数 - 获取所有的菜单权限数据，用于分配权限控件的原始数据
@@ -151,7 +168,7 @@ function RoleSettingContainer(props: Props): JSX.Element {
       nowData: data,
       operateType: type,
     });
-    setRecord(data)
+    setRecord(data);
     setTimeout(() => {
       if (type === "add") {
         // 新增，需重置表单各控件的值
@@ -233,12 +250,25 @@ function RoleSettingContainer(props: Props): JSX.Element {
     }
   };
 
+  const handleDelete = (record: TableRecordData) => {
+    confirm({
+      title: "确定删除此记录？",
+      icon: <ExclamationCircleOutlined />,
+      content: "",
+      okText: "确认",
+      cancelText: "取消",
+      onOk() {
+        return onDel(record.id);
+      },
+    });
+  };
+
   // 删除某一条数据
   const onDel = async (id: number): Promise<void> => {
     setLoading(true);
     try {
       const res = await dispatch.sys.delRole({ id });
-      if (res && res.status === 200) {
+      if (res && res.success) {
         message.success("删除成功");
         refresh();
         dispatch.app.updateUserInfo();
@@ -265,6 +295,7 @@ function RoleSettingContainer(props: Props): JSX.Element {
       (v1, v2) => [...v1, ...(v2.powers || [])],
       []
     );
+    console.log("powers", powers);
     const powerIds = powers.map((item) => item.id); // 需默认选中的功能项ID
     setModal({ nowData: record });
     setPower({
@@ -341,6 +372,7 @@ function RoleSettingContainer(props: Props): JSX.Element {
 
   return (
     <>
+      {CreateButton}
       {searchForm}
       <Table
         columns={columns}
@@ -367,7 +399,7 @@ function RoleSettingContainer(props: Props): JSX.Element {
         <MenuItem onClick={() => onAllotPowerClick(record)}>
           分配菜单功能
         </MenuItem>
-        <MenuItem onClick={() => onAllotPowerClick(record)}>分配Api</MenuItem>
+        <MenuItem onClick={() => handleDelete(record)}>删除</MenuItem>
       </ControlledMenu>
       {/* 新增&修改&查看 模态框 */}
       <Modal
@@ -425,7 +457,22 @@ function RoleSettingContainer(props: Props): JSX.Element {
             </Select>
           </Form.Item>
           <Form.Item label="api权限" name="formApiIds" {...formItemLayout}>
-            <ApiSelect/>
+            <Select
+              mode="multiple"
+              showArrow
+              style={{ width: "100%" }}
+            >
+              {apis.map((item: Api) => {
+                return (
+                  <Option key={item.id} value={item.id}>
+                    <span>
+                      <Tag color={mapTag[item.method]}>{item.method}</Tag>
+                    </span>
+                    <span>{item.url}</span>
+                  </Option>
+                );
+              })}
+            </Select>
           </Form.Item>
         </Form>
       </Modal>

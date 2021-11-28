@@ -6,15 +6,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dispatch, RootState } from "@/store";
 import {
   Button,
+  Checkbox,
   Col,
   Form,
   Input,
   message,
   Modal,
+  Popconfirm,
   Row,
   Select,
   Table,
   Tag,
+  Tooltip,
 } from "antd";
 import { useAntdTable } from "ahooks";
 import { getTableData } from "@/util/common";
@@ -23,15 +26,18 @@ import { Resp, Role } from "@/models/index.type";
 import { ControlledMenu, MenuItem, useMenuState } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/index.css";
 import tools from "@/util/tools";
-import { useSetState } from "react-use";
+import { useMount, useSetState } from "react-use";
 import {
   ModalType,
   operateType,
   TableRecordData,
 } from "@/pages/System/UserSetting/index.type";
-import { PlusCircleOutlined } from "@ant-design/icons";
+import {
+  PlusCircleOutlined,
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
 const { Option } = Select;
-
+const { confirm } = Modal;
 function UserSettingContainer(props: Props): JSX.Element {
   const dispatch = useDispatch<Dispatch>();
   const userinfo = useSelector((state: RootState) => state.app.userinfo);
@@ -40,6 +46,8 @@ function UserSettingContainer(props: Props): JSX.Element {
   const { toggleMenu, ...menuProps } = useMenuState();
   const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
   const [record, setRecord] = useState<any>(null);
+
+  const [roleOptions, setRoleOptions] = useState<[]>();
 
   const [form] = Form.useForm();
   const { tableProps, search, refresh } = useAntdTable(
@@ -56,6 +64,26 @@ function UserSettingContainer(props: Props): JSX.Element {
   pagination.showQuickJumper = true;
   pagination.showSizeChanger = true;
   const { type, changeType, submit, reset } = search;
+
+  useMount(() => {
+    getAllRolesData();
+  });
+
+  const getAllRolesData = async (): Promise<void> => {
+    try {
+      const res = await dispatch.sys.getAllRoles();
+      if (res && res.success) {
+        setRoleOptions(
+          res.data.map((e: Role) => {
+            return {
+              label: e.title,
+              value: e.id,
+            };
+          })
+        );
+      }
+    } catch {}
+  };
 
   const CreateButton = (
     <Button
@@ -107,7 +135,11 @@ function UserSettingContainer(props: Props): JSX.Element {
     <div style={{ marginBottom: 16 }}>
       <Form form={form} style={{ display: "flex", justifyContent: "flex-end" }}>
         <Form.Item name="enable">
-          <Select style={{ width: 120, marginRight: 16 }} defaultValue="" onChange={submit}>
+          <Select
+            style={{ width: 120, marginRight: 16 }}
+            defaultValue=""
+            onChange={submit}
+          >
             <Option value="">全部</Option>
             <Option value="1">启用</Option>
             <Option value="-1">禁用</Option>
@@ -168,6 +200,7 @@ function UserSettingContainer(props: Props): JSX.Element {
       } else if (data) {
         // 查看或修改，需设置表单各控件的值为当前所选中行的数据
         form.setFieldsValue({
+          formRoleIds: data.roles?.map((e) => e.id),
           formConditions: data.conditions,
           formDesc: data.desc,
           formUsername: data.username,
@@ -195,6 +228,7 @@ function UserSettingContainer(props: Props): JSX.Element {
         phone: values.formPhone,
         email: values.formEmail,
         desc: values.formDesc,
+        roleIds: values.formRoleIds,
         conditions: values.formConditions,
       };
       if (modal.operateType === "add") {
@@ -235,13 +269,25 @@ function UserSettingContainer(props: Props): JSX.Element {
       // 未通过校验
     }
   };
+  const handleDelete = (record: TableRecordData) => {
+    confirm({
+      title: "确定删除此记录？",
+      icon: <ExclamationCircleOutlined />,
+      content: "",
+      okText: "确认",
+      cancelText: "取消",
+      onOk() {
+        return onDel(record.id);
+      },
+    });
+  };
 
   // 删除某一条数据
   const onDel = async (id: number): Promise<void> => {
     setLoading(true);
     try {
       const res = await dispatch.sys.delUser({ id });
-      if (res && res.status === 200) {
+      if (res && res.success) {
         message.success("删除成功");
         refresh();
       } else {
@@ -309,6 +355,7 @@ function UserSettingContainer(props: Props): JSX.Element {
       >
         <MenuItem onClick={() => onModalShow(record, "up")}>编辑</MenuItem>
         <MenuItem onClick={() => onModalShow(record, "see")}>详情</MenuItem>
+        <MenuItem onClick={() => handleDelete(record)}>删除</MenuItem>
       </ControlledMenu>
       <Modal
         title={{ add: "新增", up: "修改", see: "查看" }[modal.operateType]}
@@ -426,6 +473,9 @@ function UserSettingContainer(props: Props): JSX.Element {
                 禁用
               </Option>
             </Select>
+          </Form.Item>
+          <Form.Item label="角色" name="formRoleIds" {...formItemLayout}>
+            <Checkbox.Group options={roleOptions} />
           </Form.Item>
         </Form>
       </Modal>

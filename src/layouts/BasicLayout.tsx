@@ -101,10 +101,8 @@ function BasicLayoutCom(props: Props): JSX.Element {
       }
       const m: string[] = menus.map((item) => item.url); // 当前用户拥有的所有菜单
 
-      if (m.includes(pathname)) {
-        return true;
-      }
-      return false;
+      console.log("collapsed", collapsed);
+      return m.includes(pathname);
     },
     [userinfo]
   );
