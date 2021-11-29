@@ -173,12 +173,6 @@ function RoleSettingContainer(props: Props): JSX.Element {
         // 新增，需重置表单各控件的值
         form.resetFields();
       } else {
-        console.log(
-          "apiIds:",
-          data?.apis.map((api) => {
-            return api.id;
-          })
-        );
         // 查看或修改，需设置表单各控件的值为当前所选中行的数据
         form.setFieldsValue({
           formConditions: data?.conditions,
