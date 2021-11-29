@@ -1,4 +1,4 @@
-/* 401 没有权限 */
+/* 401 没有功能 */
 
 import React from "react";
 import { Button } from "antd";
@@ -20,7 +20,7 @@ export default function NoPowerContainer(props: Props): JSX.Element {
     <div className="page-error">
       <div>
         <div className="title">401</div>
-        <div className="info">你没有访问该页面的权限</div>
+        <div className="info">你没有访问该页面的功能</div>
         <div className="info">请联系你的管理员</div>
         <Button className="backBtn" type="primary" ghost onClick={gotoHome}>
           返回首页

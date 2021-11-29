@@ -17,15 +17,16 @@ import {
   LoginRes,
   Resp,
 } from "./index.type";
+import tools from "@/util/tools";
 
 const defaultState: AppState = {
   userinfo: {
     roles: [], // 当前用户拥有的角色
     menus: [], // 当前用户拥有的已授权的菜单
-    powers: [], // 当前用户拥有的权限数据
+    powers: [], // 当前用户拥有的功能数据
     userBasicInfo: null, // 用户的基础信息，id,用户名...
   }, // 当前用户基本信息
-  powersCode: [], // 当前用户拥有的权限code列表(仅保留了code)，页面中的按钮的权限控制将根据此数据源判断
+  powersCode: [], // 当前用户拥有的功能code列表(仅保留了code)，页面中的按钮的功能控制将根据此数据源判断
 };
 export default {
   state: defaultState,
@@ -84,11 +85,12 @@ export default {
      * @param: {*} params
      * **/
     async setUserInfo(params: UserInfo) {
+      sessionStorage.setItem("userinfo", tools.compile(JSON.stringify(params)));
       dispatch.app.reducerUserInfo(params);
       return "success";
     },
 
-    /** 修改了角色/菜单/权限信息后需要更新用户的roles,menus,powers数据 **/
+    /** 修改了角色/菜单/功能信息后需要更新用户的roles,menus,powers数据 **/
     async updateUserInfo(
       params: undefined,
       rootState: RootState
@@ -116,8 +118,7 @@ export default {
             menus.push(menuMap[id]);
           }
         });
-        console.log("menus:", menus);
-        /** 4.根据权限id，获取权限信息 **/
+        /** 4.根据功能id，获取功能信息 **/
         const powerInfo = roles.reduce((a, b) => [...a, ...b.powers], []);
         const powerMap = {};
         powerInfo.forEach((item) => {
@@ -132,7 +133,6 @@ export default {
       } catch (e) {
         console.log("error", e);
       }
-      console.log("Menus", menus);
       this.setUserInfo({
         ...userinfo,
         roles,

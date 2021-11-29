@@ -9,23 +9,24 @@ import { message } from "antd";
 import { Dispatch } from "@/store";
 
 import {
+  Api,
+  ApiParam,
   Menu,
-  Role,
   MenuParam,
   PowerParam,
   PowerTree,
+  Res,
+  Resp,
+  Role,
   RoleParam,
   SysState,
-  Res,
   UserBasicInfoParam,
-  UserInfo,
-  Resp,
-  ApiParam,
 } from "./index.type";
 
 const defaultState: SysState = {
   menus: [], // 所有的菜单信息（用于菜单管理，无视权限）
   roles: [], // 所有的角色信息（用于Model赋予项，无视权限）
+  apis: [], // 所有的API信息
   powerTreeData: [], // 分配权限treeTable组件所需原始数据
 };
 
@@ -44,6 +45,11 @@ export default {
     // 保存所有权限数据
     reducerSetAllPowers(state: SysState, payload: PowerTree[]): SysState {
       return { ...state, powerTreeData: payload };
+    },
+
+    // 保存所有权限数据
+    reducerSetApis(state: SysState, payload: Api[]): SysState {
+      return { ...state, apis: payload };
     },
   },
 
@@ -167,10 +173,7 @@ export default {
      * **/
     async addPower(params: PowerParam) {
       try {
-        const res: Resp = await axios.post(
-          `/api/v1/sysPowers/${params.id}`,
-          params
-        );
+        const res: Resp = await axios.post(`/api/v1/sysPowers`, params);
         return res;
       } catch (err) {
         message.error("网络错误，请重试");
@@ -320,12 +323,11 @@ export default {
      * **/
     async setPowersByRoleId(params: {
       id: number;
-      menus: number[];
-      powers: number[];
+      menuIds: number[];
+      powerIds: number[];
     }) {
       try {
-        const res: Res = await axios.post("/api/setPowersByRoleId", params);
-        return res;
+        return await axios.patch(`/api/v1/sysRoles/${params.id}`, params);
       } catch (err) {
         message.error("网络错误，请重试");
       }
@@ -472,7 +474,7 @@ export default {
      * **/
     async delApi(params: { id: number }) {
       try {
-        const res: Res = await axios.delete(`/api/v1/sysApis/${params.id}`);
+        const res: Resp = await axios.delete(`/api/v1/sysApis/${params.id}`);
         return res;
       } catch (err) {
         message.error("网络错误，请重试");
@@ -484,6 +486,9 @@ export default {
     async getAllApis(): Promise<Resp | undefined> {
       try {
         const res: Resp = await axios.get("/api/v1/sysApis");
+        if (res && res.success) {
+          dispatch.sys.reducerSetApis(res.data);
+        }
         return res;
       } catch (err) {
         message.error("网络错误，请重试");

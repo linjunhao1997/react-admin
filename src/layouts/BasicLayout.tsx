@@ -86,7 +86,7 @@ function BasicLayoutCom(props: Props): JSX.Element {
   }, [props, dispatch.app]);
 
   /**
-   * 工具 - 判断当前用户是否有该路由权限，如果没有就跳转至401页
+   * 工具 - 判断当前用户是否有该路由功能，如果没有就跳转至401页
    * @param pathname 路由路径
    * **/
   const checkRouterPower = useCallback(
@@ -111,7 +111,7 @@ function BasicLayoutCom(props: Props): JSX.Element {
   const onEnter = useCallback(
     (Component, props) => {
       /**
-       * 检查当前用户是否有该路由页面的权限
+       * 检查当前用户是否有该路由页面的功能
        * 没有则跳转至401页
        * **/
       if (checkRouterPower(props.location.pathname)) {
@@ -157,27 +157,27 @@ function BasicLayoutCom(props: Props): JSX.Element {
                   render={(props) => onEnter(Home, props)}
                 />
                 {/*<!-- 使用CacheRoute可以缓存该页面，类似Keep-alive -->*/}
-                <CacheRoute
+                <Route
                   exact
                   path="/system/useradmin"
                   render={(props) => onEnter(UserSetting, props)}
                 />
-                <CacheRoute
+                <Route
                   exact
                   path="/system/roleadmin"
                   render={(props) => onEnter(RoleSetting, props)}
                 />
-                <CacheRoute
+                <Route
                   exact
                   path="/system/poweradmin"
                   render={(props) => onEnter(PowerSetting, props)}
                 />
-                <CacheRoute
+                <Route
                   exact
                   path="/system/menuadmin"
                   render={(props) => onEnter(MenuSetting, props)}
                 />
-                <CacheRoute
+                <Route
                   exact
                   path="/system/apiadmin"
                   render={(props) => onEnter(ApiSetting, props)}

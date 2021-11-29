@@ -78,7 +78,7 @@ export default function MenuCom(props: Props): JSX.Element {
           <SubMenu
             key={item.url}
             title={
-              !item.parent && item.icon ? (
+              item.icon ? (
                 <span>
                   <Icon type={item.icon} />
                   <span>{item.title}</span>
@@ -94,7 +94,7 @@ export default function MenuCom(props: Props): JSX.Element {
       } else {
         return (
           <Item key={item.url}>
-            {!item.parent && item.icon ? <Icon type={item.icon} /> : null}
+            {item.icon ? <Icon type={item.icon} /> : null}
             <span>{item.title}</span>
           </Item>
         );
@@ -110,7 +110,7 @@ export default function MenuCom(props: Props): JSX.Element {
   const treeDom: JSX.Element[] = useMemo(() => {
     const d: Menu[] = cloneDeep(props.data);
     // 按照sort排序
-  /*  d.sort((a, b) => {
+    /*  d.sort((a, b) => {
       return a.sorts - b.sorts;
     });*/
     const sourceData: Menu[] = dataToJson(null, d) || [];

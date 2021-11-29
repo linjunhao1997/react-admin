@@ -17,10 +17,10 @@ export interface Menu extends MenuParam {
   id: number; // ID
 }
 
-// 菜单id和权限id
+// 菜单id和功能id
 export interface MenuAndPower {
   menuId: number; // 菜单ID
-  powers: number[]; // 该菜单拥有的所有权限ID
+  powers: number[]; // 该菜单拥有的所有功能ID
 }
 
 // 角色添加和修改时的参数类型
@@ -43,7 +43,7 @@ export interface Role extends RoleParam {
   apis: Api[]; // 当前角色拥有api
 }
 
-// 权限添加修改时的参数类型
+// 功能添加修改时的参数类型
 export interface PowerParam {
   id?: number; // ID, 添加时可以没有id
   menuId: number; // 所属的菜单
@@ -55,7 +55,7 @@ export interface PowerParam {
   roleIds: number[]; // 属于的角色id
 }
 
-// 权限对象
+// 功能对象
 export interface Power extends PowerParam {
   id: number; // ID
   roles: Role[];
@@ -71,7 +71,7 @@ export interface ApiParam {
   conditions: number; // 状态 1启用，-1禁用
 }
 
-// 权限对象
+// 功能对象
 export interface Api extends ApiParam {
   id: number; // ID
 }
@@ -122,6 +122,7 @@ export interface AppState {
 export interface SysState {
   menus: Menu[];
   roles: Role[];
+  apis: Api[];
   powerTreeData: PowerTree[];
 }
 

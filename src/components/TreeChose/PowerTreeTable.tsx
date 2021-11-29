@@ -1,4 +1,4 @@
-/** 权限Table树 **/
+/** 功能Table树 **/
 
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { Modal, Table, Checkbox, Spin } from "antd";
@@ -8,7 +8,7 @@ import { Power, PowerTree } from "@/models/index.type";
 // 类型声明
 // ==================
 
-// 默认被选中的菜单和权限
+// 默认被选中的菜单和功能
 export type PowerTreeDefault = {
   menus: number[];
   powers: number[];
@@ -22,7 +22,7 @@ export type PowerLevel = Power & {
 
 interface Props {
   title: string; // 指定模态框标题
-  data: PowerTree[]; // 所有的菜单&权限原始数据
+  data: PowerTree[]; // 所有的菜单&功能原始数据
   defaultChecked: PowerTreeDefault; // 需要默认选中的项
   modalShow: boolean; // 是否显示
   initloading?: boolean; // 初始化时，树是否处于加载中状态
@@ -36,7 +36,7 @@ interface Props {
 // ==================
 export default function TreeTable(props: Props): JSX.Element {
   const [treeChecked, setTreeChecked] = useState<number[]>([]); // 受控，所有被选中的表格行
-  const [btnDtoChecked, setBtnDtoChecked] = useState<number[]>([]); // 受控，所有被选中的权限数据
+  const [btnDtoChecked, setBtnDtoChecked] = useState<number[]>([]); // 受控，所有被选中的功能数据
 
   // ==================
   // 副作用
@@ -66,7 +66,7 @@ export default function TreeTable(props: Props): JSX.Element {
     props.onClose();
   }, [props]);
 
-  // 被选中的权限 受控
+  // 被选中的功能 受控
   const dtoIsChecked = useCallback(
     (id: number): boolean => {
       return !!btnDtoChecked.find((item) => item === id);
@@ -74,7 +74,7 @@ export default function TreeTable(props: Props): JSX.Element {
     [btnDtoChecked]
   );
 
-  // TABLE btn权限选中和取消选中，需要记录哪些被选中
+  // TABLE btn功能选中和取消选中，需要记录哪些被选中
   const onBtnDtoChange = useCallback(
     (e, id, record) => {
       const old = [...btnDtoChecked];
@@ -86,7 +86,7 @@ export default function TreeTable(props: Props): JSX.Element {
       } else {
         // 取消选中
         old.splice(old.indexOf(id), 1);
-        // 判断当前这一行的权限中是否还有被选中的，如果全都没有选中，那当前菜单也要取消选中
+        // 判断当前这一行的功能中是否还有被选中的，如果全都没有选中，那当前菜单也要取消选中
         const tempMap = record.powers.map((item: Power) => item.id);
         if (
           !btnDtoChecked.some(
@@ -147,7 +147,7 @@ export default function TreeTable(props: Props): JSX.Element {
       onSelect: (record: TableData, selected: boolean): void => {
         const t = props.data.find((item) => item.id === record.id);
         if (selected) {
-          // 选中，连带其权限全部勾选
+          // 选中，连带其功能全部勾选
           if (t && Array.isArray(t.powers)) {
             const temp = Array.from(
               new Set([...t.powers.map((item) => item.id), ...btnDtoChecked])
@@ -155,7 +155,7 @@ export default function TreeTable(props: Props): JSX.Element {
             setBtnDtoChecked(temp);
           }
         } else {
-          // 取消选中，连带其权限全部取消勾选
+          // 取消选中，连带其功能全部取消勾选
           if (t && Array.isArray(t.powers)) {
             const mapTemp = t.powers.map((item) => item.id);
             const temp = btnDtoChecked.filter(
@@ -191,7 +191,7 @@ export default function TreeTable(props: Props): JSX.Element {
         width: "30%",
       },
       {
-        title: "权限",
+        title: "功能",
         dataIndex: "powers",
         key: "powers",
         width: "70%",

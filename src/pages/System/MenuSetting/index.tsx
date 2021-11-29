@@ -376,7 +376,9 @@ function MenuSettingContainer(props: Props) {
   /** 构建表格数据 **/
   const tableData = useMemo(() => {
     return data
-      .filter((item: Menu) => item.parent === (Number(treeSelect.id) || null))
+      .filter(
+        (item: Menu) => item.parent === (Number(treeSelect.id) || null || 0)
+      )
       .map((item, index) => {
         return {
           key: index,

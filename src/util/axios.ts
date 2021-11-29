@@ -33,7 +33,7 @@ axios.defaults.withCredentials = false;
 
 axios.interceptors.request.use((config) => {
   if (!config.url?.endsWith("/auth/v1/login")) {
-    config.headers.Authorization ="Bearer " + sessionStorage.getItem("token");
+    config.headers.Authorization = "Bearer " + sessionStorage.getItem("token");
   }
   return config;
 });
@@ -41,8 +41,6 @@ axios.interceptors.request.use((config) => {
 // 对返回的结果做处理
 axios.interceptors.response.use(
   (response) => {
-    console.log("status", response.status);
-
     return response.data;
   },
   (error) => {

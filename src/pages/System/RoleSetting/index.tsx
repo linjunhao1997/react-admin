@@ -58,7 +58,7 @@ function RoleSettingContainer(props: Props): JSX.Element {
   const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
   const [record, setRecord] = useState<any>(null);
 
-  // 权限树相关参数
+  // 功能树相关参数
   const [power, setPower] = useSetState<PowerTreeInfo>({
     treeOnOkLoading: false,
     powerTreeShow: false,
@@ -77,7 +77,7 @@ function RoleSettingContainer(props: Props): JSX.Element {
     });
   });
 
-  // 函数 - 获取所有的菜单权限数据，用于分配权限控件的原始数据
+  // 函数 - 获取所有的菜单功能数据，用于分配功能控件的原始数据
   const getPowerTreeData = () => {
     dispatch.sys.getAllMenusAndPowers();
   };
@@ -109,11 +109,10 @@ function RoleSettingContainer(props: Props): JSX.Element {
   );
   const searchForm = (
     <div style={{ marginBottom: 16 }}>
-      <Form form={form} style={{ display: "flex", justifyContent: "flex-end" }}>
+      <Form form={form} style={{ display: "flex", justifyContent: "flex-end" }} initialValues={{enable: ""}}>
         <Form.Item name="enable">
           <Select
             style={{ width: 120, marginRight: 16 }}
-            defaultValue=""
             onChange={submit}
           >
             <Option value="">全部</Option>
@@ -287,10 +286,10 @@ function RoleSettingContainer(props: Props): JSX.Element {
     });
   };
 
-  /** 分配权限按钮点击，权限控件出现 **/
+  /** 分配功能按钮点击，功能控件出现 **/
   const onAllotPowerClick = (record: TableRecordData) => {
     const menuIds = record.menus.map((item) => item.id); // 需默认选中的菜单项ID
-    // 需默认选中的权限ID
+    // 需默认选中的功能ID
     const powers = record.menus.reduce(
       (v1, v2) => [...v1, ...(v2.powers || [])],
       []
@@ -315,14 +314,14 @@ function RoleSettingContainer(props: Props): JSX.Element {
     }
     const params = {
       id: modal.nowData.id,
-      menus: arr.menus,
-      powers: arr.powers,
+      menuIds: arr.menus,
+      powerIds: arr.powers,
     };
 
     setPower({ treeOnOkLoading: true });
     try {
-      const res: Res = await dispatch.sys.setPowersByRoleId(params);
-      if (res && res.status === 200) {
+      const res: Resp | undefined = await dispatch.sys.setPowersByRoleId(params);
+      if (res && res.success) {
         refresh();
         dispatch.app.updateUserInfo();
         onPowerTreeClose();

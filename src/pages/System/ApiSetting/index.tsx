@@ -14,23 +14,25 @@ import {
   Row,
   Select,
   Table,
-  Tag,
 } from "antd";
 import { useAntdTable } from "ahooks";
 import { getTableData } from "@/util/common";
 import React, { useState } from "react";
-import {ApiParam, Resp, Role, RoleParam} from "@/models/index.type";
+import { ApiParam, Resp } from "@/models/index.type";
 import { ControlledMenu, MenuItem, useMenuState } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/index.css";
-import tools from "@/util/tools";
 import { useSetState } from "react-use";
 import {
   ModalType,
   operateType,
   TableRecordData,
 } from "@/pages/System/ApiSetting/index.type";
-import { PlusCircleOutlined } from "@ant-design/icons";
+import {
+  PlusCircleOutlined,
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
 const { Option } = Select;
+const { confirm } = Modal;
 
 function ApiSettingContainer(props: Props): JSX.Element {
   const dispatch = useDispatch<Dispatch>();
@@ -63,7 +65,7 @@ function ApiSettingContainer(props: Props): JSX.Element {
       icon={<PlusCircleOutlined />}
       onClick={() => onModalShow(null, "add")}
     >
-      添加用户
+      添加API
     </Button>
   );
   const advanceSearchForm = (
@@ -202,6 +204,7 @@ function ApiSettingContainer(props: Props): JSX.Element {
             message.success(res?.message ?? "添加成功");
             refresh();
             onClose();
+            dispatch.sys.getAllApis();
           } else {
             message.error(res?.message ?? "操作失败");
           }
@@ -219,6 +222,7 @@ function ApiSettingContainer(props: Props): JSX.Element {
             message.success(res.message);
             refresh();
             onClose();
+            dispatch.sys.getAllApis();
           } else {
             message.error(res?.message ?? res?.error ?? "操作失败");
           }
@@ -233,14 +237,28 @@ function ApiSettingContainer(props: Props): JSX.Element {
     }
   };
 
+  const handleDelete = (record: TableRecordData) => {
+    confirm({
+      title: "确定删除此记录？",
+      icon: <ExclamationCircleOutlined />,
+      content: "",
+      okText: "确认",
+      cancelText: "取消",
+      onOk() {
+        return onDel(record.id);
+      },
+    });
+  };
+
   // 删除某一条数据
   const onDel = async (id: number): Promise<void> => {
     setLoading(true);
     try {
-      const res = await dispatch.sys.delUser({ id });
-      if (res && res.status === 200) {
+      const res = await dispatch.sys.delApi({ id });
+      if (res && res.success) {
         message.success("删除成功");
         refresh();
+        dispatch.sys.getAllApis();
       } else {
         message.error(res?.message ?? "操作失败");
       }
@@ -288,7 +306,7 @@ function ApiSettingContainer(props: Props): JSX.Element {
 
   return (
     <>
-      {p.includes("user:add") && CreateButton}
+      {p.includes("api:add") && CreateButton}
       {type === "simple" ? searchForm : advanceSearchForm}
       <Table
         columns={columns}
@@ -310,8 +328,15 @@ function ApiSettingContainer(props: Props): JSX.Element {
         anchorPoint={anchorPoint}
         onClose={() => toggleMenu(false)}
       >
-        <MenuItem onClick={() => onModalShow(record, "up")}>编辑</MenuItem>
-        <MenuItem onClick={() => onModalShow(record, "see")}>详情</MenuItem>
+        {p.includes("api:up") && (
+          <MenuItem onClick={() => onModalShow(record, "up")}>编辑</MenuItem>
+        )}
+        {p.includes("api:query") && (
+          <MenuItem onClick={() => onModalShow(record, "see")}>详情</MenuItem>
+        )}
+        {p.includes("api:del") && (
+          <MenuItem onClick={() => handleDelete(record)}>删除</MenuItem>
+        )}
       </ControlledMenu>
       <Modal
         title={{ add: "新增", up: "修改", see: "查看" }[modal.operateType]}

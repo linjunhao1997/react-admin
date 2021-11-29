@@ -30,10 +30,10 @@ export type ModalType = {
   modalLoading: boolean;
 };
 
-// 权限树相关参数
+// 功能树相关参数
 export type PowerTreeInfo = {
-  treeOnOkLoading: boolean; // 是否正在分配权限
-  powerTreeShow: boolean; // 权限树是否显示
+  treeOnOkLoading: boolean; // 是否正在分配功能
+  powerTreeShow: boolean; // 功能树是否显示
   powerTreeDefault: PowerTreeDefault; // 树默认需要选中的项
 };
 

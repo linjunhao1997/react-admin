@@ -9,7 +9,7 @@ import { match } from "react-router-dom";
 // 列表table的数据类型
 export type TableRecordData = {
   key?: number;
-  id?: number;
+  id: number;
   serial?: number; // 序号
   name: string; // api名称
   desc: string; // 描述

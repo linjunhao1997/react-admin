@@ -111,11 +111,11 @@ const menus = [
   },
   {
     id: 5,
-    title: "权限管理",
+    title: "功能管理",
     icon: "icon-safetycertificate",
     url: "/system/poweradmin",
     parent: 2,
-    desc: "系统管理/权限管理",
+    desc: "系统管理/功能管理",
     sorts: 2,
     conditions: 1,
   },
@@ -131,14 +131,14 @@ const menus = [
   },
 ];
 
-// 所有的权限数据
+// 所有的功能数据
 const powers = [
   {
     id: 1,
     menu: 3,
     title: "新增",
     code: "user:add",
-    desc: "用户管理 - 添加权限",
+    desc: "用户管理 - 添加功能",
     sorts: 1,
     conditions: 1,
   },
@@ -147,7 +147,7 @@ const powers = [
     menu: 3,
     title: "修改",
     code: "user:up",
-    desc: "用户管理 - 修改权限",
+    desc: "用户管理 - 修改功能",
     sorts: 2,
     conditions: 1,
   },
@@ -156,7 +156,7 @@ const powers = [
     menu: 3,
     title: "查看",
     code: "user:query",
-    desc: "用户管理 - 查看权限",
+    desc: "用户管理 - 查看功能",
     sorts: 3,
     conditions: 1,
   },
@@ -165,7 +165,7 @@ const powers = [
     menu: 3,
     title: "删除",
     code: "user:del",
-    desc: "用户管理 - 删除权限",
+    desc: "用户管理 - 删除功能",
     sorts: 4,
     conditions: 1,
   },
@@ -174,7 +174,7 @@ const powers = [
     menu: 3,
     title: "分配角色",
     code: "user:role",
-    desc: "用户管理 - 分配角色权限",
+    desc: "用户管理 - 分配角色功能",
     sorts: 5,
     conditions: 1,
   },
@@ -184,7 +184,7 @@ const powers = [
     menu: 4,
     title: "新增",
     code: "role:add",
-    desc: "角色管理 - 添加权限",
+    desc: "角色管理 - 添加功能",
     sorts: 1,
     conditions: 1,
   },
@@ -193,7 +193,7 @@ const powers = [
     menu: 4,
     title: "修改",
     code: "role:up",
-    desc: "角色管理 - 修改权限",
+    desc: "角色管理 - 修改功能",
     sorts: 2,
     conditions: 1,
   },
@@ -202,16 +202,16 @@ const powers = [
     menu: 4,
     title: "查看",
     code: "role:query",
-    desc: "角色管理 - 查看权限",
+    desc: "角色管理 - 查看功能",
     sorts: 3,
     conditions: 1,
   },
   {
     id: 18,
     menu: 4,
-    title: "分配权限",
+    title: "分配功能",
     code: "role:power",
-    desc: "角色管理 - 分配权限",
+    desc: "角色管理 - 分配功能",
     sorts: 4,
     conditions: 1,
   },
@@ -220,7 +220,7 @@ const powers = [
     menu: 4,
     title: "删除",
     code: "role:del",
-    desc: "角色管理 - 删除权限",
+    desc: "角色管理 - 删除功能",
     sorts: 5,
     conditions: 1,
   },
@@ -230,7 +230,7 @@ const powers = [
     menu: 5,
     title: "新增",
     code: "power:add",
-    desc: "权限管理 - 添加权限",
+    desc: "功能管理 - 添加功能",
     sorts: 1,
     conditions: 1,
   },
@@ -239,7 +239,7 @@ const powers = [
     menu: 5,
     title: "修改",
     code: "power:up",
-    desc: "权限管理 - 修改权限",
+    desc: "功能管理 - 修改功能",
     sorts: 2,
     conditions: 1,
   },
@@ -248,7 +248,7 @@ const powers = [
     menu: 5,
     title: "查看",
     code: "power:query",
-    desc: "权限管理 - 查看权限",
+    desc: "功能管理 - 查看功能",
     sorts: 3,
     conditions: 1,
   },
@@ -257,7 +257,7 @@ const powers = [
     menu: 5,
     title: "删除",
     code: "power:del",
-    desc: "权限管理 - 删除权限",
+    desc: "功能管理 - 删除功能",
     sorts: 2,
     conditions: 1,
   },
@@ -267,7 +267,7 @@ const powers = [
     menu: 6,
     title: "新增",
     code: "menu:add",
-    desc: "菜单管理 - 添加权限",
+    desc: "菜单管理 - 添加功能",
     sorts: 1,
     conditions: 1,
   },
@@ -276,7 +276,7 @@ const powers = [
     menu: 6,
     title: "修改",
     code: "menu:up",
-    desc: "菜单管理 - 修改权限",
+    desc: "菜单管理 - 修改功能",
     sorts: 2,
     conditions: 1,
   },
@@ -285,7 +285,7 @@ const powers = [
     menu: 6,
     title: "查看",
     code: "menu:query",
-    desc: "菜单管理 - 查看权限",
+    desc: "菜单管理 - 查看功能",
     sorts: 3,
     conditions: 1,
   },
@@ -294,7 +294,7 @@ const powers = [
     menu: 6,
     title: "删除",
     code: "menu:del",
-    desc: "菜单管理 - 删除权限",
+    desc: "菜单管理 - 删除功能",
     sorts: 2,
     conditions: 1,
   },
@@ -304,7 +304,7 @@ const roles = [
   {
     id: 1,
     title: "超级管理员",
-    desc: "超级管理员拥有所有权限",
+    desc: "超级管理员拥有所有功能",
     sorts: 1,
     conditions: 1,
     menus: [
@@ -440,7 +440,7 @@ const delMenu = function (p) {
     return { status: 204, data: null, message: "未找到该条数据" };
   }
 };
-// 根据菜单ID查询其下权限
+// 根据菜单ID查询其下功能
 const getPowerByMenuId = function (p) {
   // const p = JSON.parse(request.body);
   const menuId = Number(p.menuId);
@@ -461,7 +461,7 @@ const getPowerByMenuId = function (p) {
     return { status: 200, data: [], message: "success" };
   }
 };
-// 根据权限ID查询对应的权限
+// 根据功能ID查询对应的功能
 const getPowerById = function (p) {
   // const p = JSON.parse(request.body);
   let res = [];
@@ -477,14 +477,14 @@ const getPowerById = function (p) {
   }
   return { status: 200, data: res, message: "success" };
 };
-// 添加权限
+// 添加功能
 const addPower = function (p) {
   // const p = JSON.parse(request.body);
   p.id = ++id_sequence;
   powers.push(p);
   return { status: 200, data: { id: p.id }, message: "success" };
 };
-// 修改权限
+// 修改功能
 const upPower = function (p) {
   // const p = JSON.parse(request.body);
 
@@ -499,7 +499,7 @@ const upPower = function (p) {
     return { status: 204, data: null, message: "未找到该条数据" };
   }
 };
-// 删除权限
+// 删除功能
 const delPower = function (p) {
   const oldIndex = powers.findIndex(function (item) {
     return item.id === p.id;
@@ -593,7 +593,7 @@ const delRole = function (p) {
     return { status: 204, data: null, message: "未找到该条数据" };
   }
 };
-// 根据角色ID查询该角色所拥有的菜单和权限详细信息
+// 根据角色ID查询该角色所拥有的菜单和功能详细信息
 const findAllPowerByRoleId = function (p) {
   // const p = JSON.parse(request.body);
   const t = roles.find(function (item) {
@@ -619,7 +619,7 @@ const findAllPowerByRoleId = function (p) {
     return { status: 204, data: null, message: "未找到该角色" };
   }
 };
-// 获取所有的菜单及权限数据 - 为了构建PowerTree组件
+// 获取所有的菜单及功能数据 - 为了构建PowerTree组件
 const getAllMenusAndPowers = function (p) {
   const res = menus.map(function (item) {
     const _menu = item;
@@ -631,7 +631,7 @@ const getAllMenusAndPowers = function (p) {
   });
   return { status: 200, data: res, message: "success" };
 };
-// 给指定角色分配菜单和权限
+// 给指定角色分配菜单和功能
 const setPowersByRoleId = function (p) {
   // const p = JSON.parse(request.body);
   const oldIndex = roles.findIndex(function (item) {
@@ -641,9 +641,9 @@ const setPowersByRoleId = function (p) {
     const pow = p.menus.map(function (item) {
       return { menuId: item, powers: [] };
     });
-    // 将每一个权限id归类到对应的菜单里
+    // 将每一个功能id归类到对应的菜单里
     p.powers.forEach(function (ppItem) {
-      // 通过权限id查询该权限对象
+      // 通过功能id查询该功能对象
       const thePowerData = powers.find(function (pItem) {
         return pItem.id === ppItem;
       });
@@ -667,7 +667,7 @@ const setPowersByRoleId = function (p) {
   }
 };
 
-// 给指定角色分配菜单和权限
+// 给指定角色分配菜单和功能
 const setPowersByRoleIds = function (ps) {
   ps.forEach(function (p) {
     const oldIndex = roles.findIndex(function (item) {
@@ -677,9 +677,9 @@ const setPowersByRoleIds = function (ps) {
       const pow = p.menus.map(function (item) {
         return { menuId: item, powers: [] };
       });
-      // 将每一个权限id归类到对应的菜单里
+      // 将每一个功能id归类到对应的菜单里
       p.powers.forEach(function (ppItem) {
-        // 通过权限id查询该权限对象
+        // 通过功能id查询该功能对象
         const thePowerData = powers.find(function (pItem) {
           return pItem.id === ppItem;
         });

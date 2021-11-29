@@ -1,4 +1,4 @@
-/** 权限管理页 **/
+/** 功能管理页 **/
 
 // ==================
 // 第三方库
@@ -85,7 +85,7 @@ function PowerSettingContainer(props: Props) {
 
   const [form] = Form.useForm();
 
-  const [data, setData] = useState<Power[]>([]); // 当前所选菜单下的权限数据
+  const [data, setData] = useState<Power[]>([]); // 当前所选菜单下的功能数据
   const [loading, setLoading] = useState<boolean>(false); // 数据是否正在加载中
 
   // 模态框相关参数控制
@@ -110,7 +110,7 @@ function PowerSettingContainer(props: Props) {
     dispatch.sys.getAllRoles();
   });
 
-  // 根据所选菜单id获取其下权限数据
+  // 根据所选菜单id获取其下功能数据
   const getData = async (menuId: string | number | null = null) => {
     setLoading(true);
     try {
@@ -166,7 +166,6 @@ function PowerSettingContainer(props: Props) {
 
   // 新增&修改 模态框出现
   const onModalShow = (data: TableRecordData | null, type: operateType) => {
-    console.log("data", data);
     setModal({
       modalShow: true,
       nowData: data,
@@ -245,10 +244,7 @@ function PowerSettingContainer(props: Props) {
             message.success(res?.message ?? "添加成功");
             getData(treeSelect.id);
             onClose();
-
-            //await setPowersByRoleIds(res.data.id, rolesCheckboxChose);
             dispatch.app.updateUserInfo();
-            dispatch.sys.getAllRoles();
           } else {
             message.error("添加失败");
           }
@@ -271,9 +267,6 @@ function PowerSettingContainer(props: Props) {
             message.success(res?.message ?? "修改成功");
             getData(treeSelect.id);
             onClose();
-
-            //await setPowersByRoleIds(params.id, rolesCheckboxChose);
-            dispatch.sys.getAllRoles();
             dispatch.app.updateUserInfo();
           } else {
             message.error("修改失败");
@@ -305,8 +298,8 @@ function PowerSettingContainer(props: Props) {
 
   /**
    * 批量更新roles
-   * @param id 当前这个权限的id
-   * @param roleIds 选中的角色的id们，要把当前权限赋给这些角色
+   * @param id 当前这个功能的id
+   * @param roleIds 选中的角色的id们，要把当前功能赋给这些角色
    *  **/
   const setPowersByRoleIds = (id: number, roleIds: number[]) => {
     const params = roles.map((item) => {
@@ -352,7 +345,7 @@ function PowerSettingContainer(props: Props) {
       key: "serial",
     },
     {
-      title: "权限名称",
+      title: "功能名称",
       dataIndex: "title",
       key: "title",
     },
@@ -479,7 +472,7 @@ function PowerSettingContainer(props: Props) {
                 onClick={() => onModalShow(null, "add")}
                 disabled={!(treeSelect.id && p.includes("power:add"))}
               >
-                {`添加${treeSelect.title || ""}权限`}
+                {`添加${treeSelect.title || ""}功能`}
               </Button>
             </li>
           </ul>
@@ -499,7 +492,7 @@ function PowerSettingContainer(props: Props) {
       <Modal
         title={`${
           { add: "新增", up: "修改", see: "查看" }[modal.operateType]
-        }权限: ${treeSelect.title}->${modal.nowData?.title ?? ""}`}
+        }功能: ${treeSelect.title}->${modal.nowData?.title ?? ""}`}
         visible={modal.modalShow}
         onOk={onOk}
         onCancel={onClose}
@@ -507,7 +500,7 @@ function PowerSettingContainer(props: Props) {
       >
         <Form form={form} initialValues={{ formConditions: 1 }}>
           <Form.Item
-            label="权限名"
+            label="功能名"
             name="formTitle"
             {...formItemLayout}
             rules={[
@@ -516,7 +509,7 @@ function PowerSettingContainer(props: Props) {
             ]}
           >
             <Input
-              placeholder="请输入权限名"
+              placeholder="请输入功能名"
               disabled={modal.operateType === "see"}
             />
           </Form.Item>
@@ -530,7 +523,7 @@ function PowerSettingContainer(props: Props) {
             ]}
           >
             <Input
-              placeholder="请输入权限Code"
+              placeholder="请输入功能Code"
               disabled={modal.operateType === "see"}
             />
           </Form.Item>
