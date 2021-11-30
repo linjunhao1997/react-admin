@@ -159,27 +159,27 @@ function BasicLayoutCom(props: Props): JSX.Element {
                 {/*<!-- 使用CacheRoute可以缓存该页面，类似Keep-alive -->*/}
                 <Route
                   exact
-                  path="/system/useradmin"
+                  path="/system/usersetting"
                   render={(props) => onEnter(UserSetting, props)}
                 />
                 <Route
                   exact
-                  path="/system/roleadmin"
+                  path="/system/rolesetting"
                   render={(props) => onEnter(RoleSetting, props)}
                 />
                 <Route
                   exact
-                  path="/system/poweradmin"
+                  path="/system/powersetting"
                   render={(props) => onEnter(PowerSetting, props)}
                 />
                 <Route
                   exact
-                  path="/system/menuadmin"
+                  path="/system/menusetting"
                   render={(props) => onEnter(MenuSetting, props)}
                 />
                 <Route
                   exact
-                  path="/system/apiadmin"
+                  path="/system/apisetting"
                   render={(props) => onEnter(ApiSetting, props)}
                 />
                 <Route exact path="/nopower" component={NoPower} />
