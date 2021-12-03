@@ -121,7 +121,10 @@ function MenuSettingContainer(props: Props) {
     } else {
       kids = data.filter((item: Menu) => item.parent === one.id);
     }
-    kids.forEach((item: Menu) => (item.children = dataToJson(item, data)));
+    kids.forEach((item: Menu, index: number) => {
+      item.index = index;
+      item.children = dataToJson(item, data);
+    });
     return kids.length ? kids : null;
   }, []);
 
@@ -268,8 +271,10 @@ function MenuSettingContainer(props: Props) {
   const tableColumns = [
     {
       title: "序号",
-      dataIndex: "serial",
+      dataIndex: "sorts",
       key: "serial",
+      defaultSortOrder: "ascend",
+      sorter: (a: Menu, b: Menu) => a.sorts - b.sorts,
     },
     {
       title: "图标",
@@ -394,6 +399,65 @@ function MenuSettingContainer(props: Props) {
         };
       });
   }, [data, treeSelect.id]);
+  const onDrop = (info: any) => {
+    const { node, dragNode, dropPosition, dropToGap, event, dragNodesKeys } =
+      info;
+    let targetMenus: [] = [];
+    const loop = (data, key) => {
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].key === key) {
+          targetMenus = data;
+          return;
+        } else if (data[i].children) {
+          loop(data[i].children, key);
+        }
+      }
+    };
+    console.log("dropToGap", dropToGap);
+    const targetData = cloneDeep(sourceData);
+    loop(targetData, dragNode.key);
+    const length = targetMenus.length;
+    const drag = targetMenus[dragNode.index];
+    targetMenus.splice(dragNode.index, 1);
+    let resultMenus: Menu[] = [];
+    if (!dropToGap) {
+      targetMenus.unshift(drag);
+      resultMenus = targetMenus;
+    } else if (dropPosition == length) {
+      resultMenus = targetMenus.concat(drag);
+    } else {
+      let position;
+
+      if (dropPosition == length - 1) {
+        position = dropPosition - 1;
+      } else {
+        position = dropPosition;
+      }
+      const a1 = targetMenus.slice(0, position);
+      const a2 = targetMenus.slice(position);
+      resultMenus = a1
+        .concat(drag)
+        .concat(a2)
+        .filter((e: any) => e != undefined);
+    }
+
+    dispatch.sys
+      .sortMenus(resultMenus.map((item: any) => item.id))
+      .then((resp) => {
+        if (resp?.success) {
+          getData();
+          dispatch.app.updateUserInfo();
+        }
+      });
+  };
+
+  const onDragEnter = (info: any) => {
+    //console.log(info);
+  };
+
+  const allowDrop = ({ dropNode, dropPosition, dragNode }: any) => {
+    return dragNode.parent == dropNode.parent || dropPosition == 0;
+  };
 
   return (
     <div className="page-menu-admin">
@@ -401,6 +465,10 @@ function MenuSettingContainer(props: Props) {
         <div className="title">目录结构</div>
         <div>
           <Tree
+            draggable
+            onDrop={onDrop}
+            allowDrop={allowDrop}
+            onDragEnter={onDragEnter}
             defaultExpandedKeys={["0"]}
             onSelect={onTreeSelect}
             selectedKeys={[String(treeSelect.id)]}

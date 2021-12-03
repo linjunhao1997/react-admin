@@ -15,6 +15,7 @@ export interface MenuParam {
 // 菜单对象
 export interface Menu extends MenuParam {
   id: number; // ID
+  index?: number;
 }
 
 // 菜单id和功能id

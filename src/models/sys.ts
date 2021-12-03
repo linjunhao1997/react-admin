@@ -142,12 +142,12 @@ export default {
     },
 
     /**
-     * 根据权限ID查询对应的权限数据
-     * @param id 可以是一个数字也可以是一个数组
+     * 排序菜单
+     * @param id数组
      * **/
-    async getPowerById(params: { id: number | number[] }) {
+    async sortMenus(menuIds: number[]) {
       try {
-        const res: Res = await axios.post(`/api/getPowerById`, params);
+        const res: Resp = await axios.post(`/api/v1/sysMenus/_sort`, menuIds);
         return res;
       } catch (err) {
         message.error("网络错误，请重试");
