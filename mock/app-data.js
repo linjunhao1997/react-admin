@@ -22,7 +22,7 @@ const users = [
     phone: "13600000000",
     email: "admin@react.com",
     desc: "超级管理员",
-    conditions: 1,
+    disabled: 0,
     roles: [1, 2, 3],
   },
   {
@@ -32,7 +32,7 @@ const users = [
     phone: "13600000001",
     email: "user@react.com",
     desc: "普通管理员",
-    conditions: 1,
+    disabled: 0,
     roles: [2],
   },
   {
@@ -42,7 +42,7 @@ const users = [
     phone: "13600000001",
     email: "user@react.com",
     desc: "普通管理员3",
-    conditions: 1,
+    disabled: 0,
     roles: [2],
   },
   {
@@ -52,7 +52,7 @@ const users = [
     phone: "13600000001",
     email: "user@react.com",
     desc: "普通管理员4",
-    conditions: 1,
+    disabled: 0,
     roles: [2],
   },
   {
@@ -62,7 +62,7 @@ const users = [
     phone: "13600000001",
     email: "user@react.com",
     desc: "普通管理员5",
-    conditions: 1,
+    disabled: 0,
     roles: [2],
   },
 ];
@@ -77,7 +77,7 @@ const menus = [
     parent: null,
     desc: "首页",
     sorts: 0,
-    conditions: 1,
+    disabled: 0,
   },
   {
     id: 2,
@@ -87,7 +87,7 @@ const menus = [
     parent: null,
     desc: "系统管理目录分支",
     sorts: 1,
-    conditions: 1,
+    disabled: 0,
   },
   {
     id: 3,
@@ -97,7 +97,7 @@ const menus = [
     parent: 2,
     desc: "系统管理/用户管理",
     sorts: 0,
-    conditions: 1,
+    disabled: 0,
   },
   {
     id: 4,
@@ -107,7 +107,7 @@ const menus = [
     parent: 2,
     desc: "系统管理/角色管理",
     sorts: 1,
-    conditions: 1,
+    disabled: 0,
   },
   {
     id: 5,
@@ -117,7 +117,7 @@ const menus = [
     parent: 2,
     desc: "系统管理/功能管理",
     sorts: 2,
-    conditions: 1,
+    disabled: 0,
   },
   {
     id: 6,
@@ -127,7 +127,7 @@ const menus = [
     parent: 2,
     desc: "系统管理/菜单管理",
     sorts: 3,
-    conditions: 1,
+    disabled: 0,
   },
 ];
 
@@ -140,7 +140,7 @@ const powers = [
     code: "user:add",
     desc: "用户管理 - 添加功能",
     sorts: 1,
-    conditions: 1,
+    disabled: 0,
   },
   {
     id: 2,
@@ -149,7 +149,7 @@ const powers = [
     code: "user:up",
     desc: "用户管理 - 修改功能",
     sorts: 2,
-    conditions: 1,
+    disabled: 0,
   },
   {
     id: 3,
@@ -158,7 +158,7 @@ const powers = [
     code: "user:query",
     desc: "用户管理 - 查看功能",
     sorts: 3,
-    conditions: 1,
+    disabled: 0,
   },
   {
     id: 4,
@@ -167,7 +167,7 @@ const powers = [
     code: "user:del",
     desc: "用户管理 - 删除功能",
     sorts: 4,
-    conditions: 1,
+    disabled: 0,
   },
   {
     id: 5,
@@ -176,7 +176,7 @@ const powers = [
     code: "user:role",
     desc: "用户管理 - 分配角色功能",
     sorts: 5,
-    conditions: 1,
+    disabled: 0,
   },
 
   {
@@ -186,7 +186,7 @@ const powers = [
     code: "role:add",
     desc: "角色管理 - 添加功能",
     sorts: 1,
-    conditions: 1,
+    disabled: 0,
   },
   {
     id: 7,
@@ -195,7 +195,7 @@ const powers = [
     code: "role:up",
     desc: "角色管理 - 修改功能",
     sorts: 2,
-    conditions: 1,
+    disabled: 0,
   },
   {
     id: 8,
@@ -204,7 +204,7 @@ const powers = [
     code: "role:query",
     desc: "角色管理 - 查看功能",
     sorts: 3,
-    conditions: 1,
+    disabled: 0,
   },
   {
     id: 18,
@@ -213,7 +213,7 @@ const powers = [
     code: "role:power",
     desc: "角色管理 - 分配功能",
     sorts: 4,
-    conditions: 1,
+    disabled: 0,
   },
   {
     id: 9,
@@ -222,7 +222,7 @@ const powers = [
     code: "role:del",
     desc: "角色管理 - 删除功能",
     sorts: 5,
-    conditions: 1,
+    disabled: 0,
   },
 
   {
@@ -232,7 +232,7 @@ const powers = [
     code: "power:add",
     desc: "功能管理 - 添加功能",
     sorts: 1,
-    conditions: 1,
+    disabled: 0,
   },
   {
     id: 11,
@@ -241,7 +241,7 @@ const powers = [
     code: "power:up",
     desc: "功能管理 - 修改功能",
     sorts: 2,
-    conditions: 1,
+    disabled: 0,
   },
   {
     id: 12,
@@ -250,7 +250,7 @@ const powers = [
     code: "power:query",
     desc: "功能管理 - 查看功能",
     sorts: 3,
-    conditions: 1,
+    disabled: 0,
   },
   {
     id: 13,
@@ -259,7 +259,7 @@ const powers = [
     code: "power:del",
     desc: "功能管理 - 删除功能",
     sorts: 2,
-    conditions: 1,
+    disabled: 0,
   },
 
   {
@@ -269,7 +269,7 @@ const powers = [
     code: "menu:add",
     desc: "菜单管理 - 添加功能",
     sorts: 1,
-    conditions: 1,
+    disabled: 0,
   },
   {
     id: 15,
@@ -278,7 +278,7 @@ const powers = [
     code: "menu:up",
     desc: "菜单管理 - 修改功能",
     sorts: 2,
-    conditions: 1,
+    disabled: 0,
   },
   {
     id: 16,
@@ -287,7 +287,7 @@ const powers = [
     code: "menu:query",
     desc: "菜单管理 - 查看功能",
     sorts: 3,
-    conditions: 1,
+    disabled: 0,
   },
   {
     id: 17,
@@ -296,7 +296,7 @@ const powers = [
     code: "menu:del",
     desc: "菜单管理 - 删除功能",
     sorts: 2,
-    conditions: 1,
+    disabled: 0,
   },
 ];
 // 所有的角色数据
@@ -306,7 +306,7 @@ const roles = [
     title: "超级管理员",
     desc: "超级管理员拥有所有功能",
     sorts: 1,
-    conditions: 1,
+    disabled: 0,
     menus: [
       { menuId: 1, powers: [] },
       { menuId: 2, powers: [] },
@@ -321,7 +321,7 @@ const roles = [
     title: "普通管理员",
     desc: "普通管理员",
     sorts: 2,
-    conditions: 1,
+    disabled: 0,
     menus: [
       { menuId: 1, powers: [] },
       { menuId: 2, powers: [] },
@@ -336,7 +336,7 @@ const roles = [
     title: "运维人员",
     desc: "运维人员不能删除对象",
     sorts: 3,
-    conditions: 1,
+    disabled: 0,
     menus: [
       { menuId: 1, powers: [] },
       { menuId: 2, powers: [] },
@@ -517,11 +517,11 @@ const getRoles = function (p) {
   const map = roles.filter(function (item) {
     let yeah = true;
     const title = decode(p.title);
-    const conditions = Number(p.conditions);
+    const disabled = Number(p.disabled);
     if (title && !item.title.includes(title)) {
       yeah = false;
     }
-    if (conditions && item.conditions !== conditions) {
+    if (disabled && item.disabled !== disabled) {
       yeah = false;
     }
     return yeah;
@@ -610,7 +610,7 @@ const findAllPowerByRoleId = function (p) {
         });
       });
       _menu.powers = _powers.filter(function (item) {
-        return item.conditions === 1;
+        return item.disabled === 1;
       });
       return _menu;
     });
@@ -624,7 +624,7 @@ const getAllMenusAndPowers = function (p) {
   const res = menus.map(function (item) {
     const _menu = item;
     const _powers = powers.filter(function (v) {
-      return v.menu === item.id && v.conditions === 1;
+      return v.menu === item.id && v.disabled === 1;
     });
     _menu.powers = _powers;
     return _menu;
@@ -706,11 +706,11 @@ const getUserList = function (p) {
   const map = users.filter(function (item) {
     let yeah = true;
     const username = decode(p.username);
-    const conditions = Number(p.conditions);
+    const disabled = Number(p.disabled);
     if (username && !item.username.includes(username)) {
       yeah = false;
     }
-    if (conditions && item.conditions != conditions) {
+    if (disabled && item.disabled != disabled) {
       yeah = false;
     }
     return yeah;

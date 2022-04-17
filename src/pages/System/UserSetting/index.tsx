@@ -12,12 +12,10 @@ import {
   Input,
   message,
   Modal,
-  Popconfirm,
   Row,
   Select,
   Table,
   Tag,
-  Tooltip,
 } from "antd";
 import { useAntdTable } from "ahooks";
 import { getTableData } from "@/util/common";
@@ -47,14 +45,15 @@ function UserSettingContainer(props: Props): JSX.Element {
   const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
   const [record, setRecord] = useState<any>(null);
 
-  const [roleOptions, setRoleOptions] = useState<[]>();
+  const [roleOptions, setRoleOptions] = useState<any[]>();
 
-  const [form] = Form.useForm();
+  const [formForSearch] = Form.useForm();
+
   const { tableProps, search, refresh } = useAntdTable(
     getTableData(`/api/v1/sysUsers/_search`),
     {
       defaultPageSize: 10,
-      form,
+      form: formForSearch,
     }
   );
   const { pagination } = tableProps as any;
@@ -69,20 +68,18 @@ function UserSettingContainer(props: Props): JSX.Element {
     getAllRolesData();
   });
 
-  const getAllRolesData = async (): Promise<void> => {
-    try {
-      const res = await dispatch.sys.getAllRoles();
-      if (res && res.success) {
-        setRoleOptions(
-          res.data.map((e: Role) => {
-            return {
-              label: e.title,
-              value: e.id,
-            };
-          })
-        );
-      }
-    } catch {}
+  const getAllRolesData = () => {
+    dispatch.sys.getAllRoles().then((roles) => {
+      setRoleOptions(
+        roles.map((e: Role) => {
+          return {
+            label: e.title,
+            disabled: e.disabled,
+            value: e.id,
+          };
+        })
+      );
+    });
   };
 
   const CreateButton = (
@@ -96,7 +93,7 @@ function UserSettingContainer(props: Props): JSX.Element {
   );
   const advanceSearchForm = (
     <div>
-      <Form form={form}>
+      <Form form={formForSearch}>
         <Row gutter={24}>
           <Col span={8}>
             <Form.Item label="用户名" name="username">
@@ -133,16 +130,19 @@ function UserSettingContainer(props: Props): JSX.Element {
 
   const searchForm = (
     <div style={{ marginBottom: 16 }}>
-      <Form form={form} style={{ display: "flex", justifyContent: "flex-end" }}>
-        <Form.Item name="enable">
+      <Form
+        form={formForSearch}
+        style={{ display: "flex", justifyContent: "flex-end" }}
+      >
+        <Form.Item name="disabled">
           <Select
             style={{ width: 120, marginRight: 16 }}
             defaultValue=""
             onChange={submit}
           >
             <Option value="">全部</Option>
-            <Option value="1">启用</Option>
-            <Option value="-1">禁用</Option>
+            <Option value="0">启用</Option>
+            <Option value="1">禁用</Option>
           </Select>
         </Form.Item>
         <Form.Item name="username">
@@ -178,6 +178,7 @@ function UserSettingContainer(props: Props): JSX.Element {
     modalShow: false,
     modalLoading: false,
   });
+  const [formForModal] = Form.useForm();
   /**
    * 添加/修改/查看 模态框出现
    * @param data 当前选中的那条数据
@@ -196,12 +197,12 @@ function UserSettingContainer(props: Props): JSX.Element {
     setTimeout(() => {
       if (type === "add") {
         // 新增，需重置表单各控件的值
-        form.resetFields();
+        formForModal.resetFields();
       } else if (data) {
         // 查看或修改，需设置表单各控件的值为当前所选中行的数据
-        form.setFieldsValue({
+        formForModal.setFieldsValue({
           formRoleIds: data.roles?.map((e) => e.id),
-          formConditions: data.conditions,
+          formDisabled: data.disabled,
           formDesc: data.desc,
           formUsername: data.username,
           formPhone: data.phone,
@@ -218,7 +219,7 @@ function UserSettingContainer(props: Props): JSX.Element {
       return;
     }
     try {
-      const values = await form.validateFields();
+      const values = await formForModal.validateFields();
       setModal({
         modalLoading: true,
       });
@@ -229,7 +230,7 @@ function UserSettingContainer(props: Props): JSX.Element {
         email: values.formEmail,
         desc: values.formDesc,
         roleIds: values.formRoleIds,
-        conditions: values.formConditions,
+        disabled: values.formDisabled,
       };
       if (modal.operateType === "add") {
         // 新增
@@ -365,9 +366,9 @@ function UserSettingContainer(props: Props): JSX.Element {
         confirmLoading={modal.modalLoading}
       >
         <Form
-          form={form}
+          form={formForModal}
           initialValues={{
-            formConditions: 1,
+            formDisabled: 0,
           }}
         >
           <Form.Item
@@ -461,15 +462,15 @@ function UserSettingContainer(props: Props): JSX.Element {
           </Form.Item>
           <Form.Item
             label="状态"
-            name="formConditions"
+            name="formDisabled"
             {...formItemLayout}
             rules={[{ required: true, message: "请选择状态" }]}
           >
             <Select disabled={modal.operateType === "see"}>
-              <Option key={1} value={1}>
+              <Option key={0} value={0}>
                 启用
               </Option>
-              <Option key={-1} value={-1}>
+              <Option key={1} value={1}>
                 禁用
               </Option>
             </Select>

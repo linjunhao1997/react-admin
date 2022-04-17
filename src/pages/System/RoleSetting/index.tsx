@@ -5,19 +5,7 @@ import {
 } from "@/pages/System/RoleSetting/index.type";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch, RootState } from "@/store";
-import {
-  Button,
-  Col,
-  Form,
-  Input,
-  InputNumber,
-  message,
-  Modal,
-  Row,
-  Select,
-  Table,
-  Tag,
-} from "antd";
+import { Button, Form, Input, message, Modal, Select, Table, Tag } from "antd";
 import { useAntdTable } from "ahooks";
 import { getTableData } from "@/util/common";
 import React, { useState } from "react";
@@ -26,12 +14,15 @@ import { ControlledMenu, MenuItem, useMenuState } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/index.css";
 import { useMount, useSetState } from "react-use";
 import { ModalType, operateType } from "@/pages/System/RoleSetting/index.type";
-import { PlusCircleOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
+import {
+  PlusCircleOutlined,
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
 import { PowerTreeInfo } from "@/pages/System/RoleSetting/index.type";
 import PowerTreeCom, {
   PowerTreeDefault,
 } from "@/components/TreeChose/PowerTreeTable";
-import ApiSelect from "@/components/Select/ApiSelect";
+
 const { Option } = Select;
 const { confirm } = Modal;
 
@@ -82,12 +73,12 @@ function RoleSettingContainer(props: Props): JSX.Element {
     dispatch.sys.getAllMenusAndPowers();
   };
 
-  const [form] = Form.useForm();
+  const [formForSearch] = Form.useForm();
   const { tableProps, search, refresh } = useAntdTable(
     getTableData(`/api/v1/sysRoles/_search`),
     {
       defaultPageSize: 10,
-      form,
+      form: formForSearch,
     }
   );
   const { pagination } = tableProps as any;
@@ -109,15 +100,20 @@ function RoleSettingContainer(props: Props): JSX.Element {
   );
   const searchForm = (
     <div style={{ marginBottom: 16 }}>
-      <Form form={form} style={{ display: "flex", justifyContent: "flex-end" }} initialValues={{enable: ""}}>
-        <Form.Item name="enable">
+      <Form
+        form={formForSearch}
+        style={{ display: "flex", justifyContent: "flex-end" }}
+        initialValues={{ fromDisabled: 0 }}
+      >
+        <Form.Item name="disabled">
           <Select
             style={{ width: 120, marginRight: 16 }}
             onChange={submit}
+            defaultValue=""
           >
             <Option value="">全部</Option>
-            <Option value="1">启用</Option>
-            <Option value="-1">禁用</Option>
+            <Option value="0">启用</Option>
+            <Option value="1">禁用</Option>
           </Select>
         </Form.Item>
         <Form.Item name="name">
@@ -151,6 +147,8 @@ function RoleSettingContainer(props: Props): JSX.Element {
     modalShow: false,
     modalLoading: false,
   });
+
+  const [formForModal] = Form.useForm();
   /**
    * 添加/修改/查看 模态框出现
    * @param data 当前选中的那条数据
@@ -171,11 +169,11 @@ function RoleSettingContainer(props: Props): JSX.Element {
     setTimeout(() => {
       if (type === "add") {
         // 新增，需重置表单各控件的值
-        form.resetFields();
+        formForModal.resetFields();
       } else {
         // 查看或修改，需设置表单各控件的值为当前所选中行的数据
-        form.setFieldsValue({
-          formConditions: data?.conditions,
+        formForModal.setFieldsValue({
+          formDisabled: data?.disabled,
           formDesc: data?.desc,
           //formSorts: data?.sorts,
           formApiIds: data?.apis.map((api) => {
@@ -193,7 +191,7 @@ function RoleSettingContainer(props: Props): JSX.Element {
       return;
     }
     try {
-      const values = await form.validateFields();
+      const values = await formForModal.validateFields();
       setModal({
         modalLoading: true,
       });
@@ -202,7 +200,7 @@ function RoleSettingContainer(props: Props): JSX.Element {
         desc: values.formDesc,
         //sorts: values.formSorts,
         apiIds: values.formApiIds,
-        conditions: values.formConditions,
+        disabled: values.formDisabled,
       };
       if (modal.operateType === "add") {
         // 新增
@@ -288,7 +286,6 @@ function RoleSettingContainer(props: Props): JSX.Element {
       (v1, v2) => [...v1, ...(v2.powers || [])],
       []
     );
-    console.log("powers", powers);
     const powerIds = powers.map((item) => item.id); // 需默认选中的功能项ID
     setModal({ nowData: record });
     setPower({
@@ -314,7 +311,9 @@ function RoleSettingContainer(props: Props): JSX.Element {
 
     setPower({ treeOnOkLoading: true });
     try {
-      const res: Resp | undefined = await dispatch.sys.setPowersByRoleId(params);
+      const res: Resp | undefined = await dispatch.sys.setPowersByRoleId(
+        params
+      );
       if (res && res.success) {
         refresh();
         dispatch.app.updateUserInfo();
@@ -352,10 +351,10 @@ function RoleSettingContainer(props: Props): JSX.Element {
     },
     {
       title: "状态",
-      dataIndex: "conditions",
-      key: "conditions",
+      dataIndex: "disabled",
+      key: "disabled",
       render: (v: number) =>
-        v === 1 ? (
+        v === 0 ? (
           <span style={{ color: "green" }}>启用</span>
         ) : (
           <span style={{ color: "red" }}>禁用</span>
@@ -403,9 +402,9 @@ function RoleSettingContainer(props: Props): JSX.Element {
         confirmLoading={modal.modalLoading}
       >
         <Form
-          form={form}
+          form={formForModal}
           initialValues={{
-            formConditions: 1,
+            formDisabled: 0,
           }}
         >
           <Form.Item
@@ -436,15 +435,15 @@ function RoleSettingContainer(props: Props): JSX.Element {
           </Form.Item>
           <Form.Item
             label="状态"
-            name="formConditions"
+            name="formDisabled"
             {...formItemLayout}
             rules={[{ required: true, message: "请选择状态" }]}
           >
             <Select disabled={modal.operateType === "see"}>
-              <Option key={1} value={1}>
+              <Option key={0} value={0}>
                 启用
               </Option>
-              <Option key={-1} value={-1}>
+              <Option key={1} value={1}>
                 禁用
               </Option>
             </Select>
@@ -454,10 +453,15 @@ function RoleSettingContainer(props: Props): JSX.Element {
               mode="multiple"
               showArrow
               style={{ width: "100%" }}
+              disabled={modal.operateType === "see"}
             >
               {apis.map((item: Api) => {
                 return (
-                  <Option key={item.id} value={item.id}>
+                  <Option
+                    key={item.id}
+                    value={item.id}
+                    disabled={!!item.disabled}
+                  >
                     <span>
                       <Tag color={mapTag[item.method]}>{item.method}</Tag>
                     </span>

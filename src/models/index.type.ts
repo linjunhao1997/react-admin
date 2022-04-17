@@ -7,7 +7,7 @@ export interface MenuParam {
   parent: number | null; // 父级ID
   desc: string; // 描述
   sorts?: number; // 排序编号
-  conditions: number; // 状态，1启用，-1禁用
+  disabled: number; // 状态: 1禁用,0启用
   children?: Menu[]; // 子菜单
   powers?: Power[]; // 菜单功能
 }
@@ -30,7 +30,7 @@ export interface RoleParam {
   title: string; // 角色名
   desc: string; // 描述
   sorts?: number; // 排序编号
-  conditions: number; // 状态，1启用，-1禁用
+  disabled: number; // 状态: 1禁用,0启用
   menuIds?: number[]; // 当前角色拥有的菜单Id
   powerIds?: number[]; // 当前角色拥有的功能Id
   apiIds?: number[]; // 当前角色拥有apiId
@@ -52,7 +52,7 @@ export interface PowerParam {
   code: string; // CODE
   desc: string; // 描述
   sorts: number; // 排序
-  conditions: number; // 状态 1启用，-1禁用
+  disabled: number; // 状态: 1禁用,0启用
   roleIds: number[]; // 属于的角色id
 }
 
@@ -69,7 +69,7 @@ export interface ApiParam {
   url: string; // url
   method: string; // 请求方式
   desc: string; // 描述
-  conditions: number; // 状态 1启用，-1禁用
+  disabled: number; // 状态: 1禁用,0启用
 }
 
 // 功能对象
@@ -93,7 +93,7 @@ export interface UserBasicInfo {
   phone: string | number; // 手机
   email: string; // 邮箱
   desc: string; // 描述
-  conditions: number; // 状态 1启用，-1禁用
+  disabled: number; // 状态: 1禁用,0启用
   roles: number[]; // 拥有的所有角色ID
 }
 
@@ -106,7 +106,7 @@ export interface UserBasicInfoParam {
   email?: string; // 邮箱
   desc?: string; // 描述
   roleIds?: number[]; // 角色
-  conditions?: number; // 状态 1启用，-1禁用
+  disabled?: number; // 状态: 1禁用,0启用
 }
 
 export interface PowerTree extends Menu {

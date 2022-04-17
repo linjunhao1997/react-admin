@@ -137,6 +137,11 @@ module.exports = {
       template: "./public/index.html", // html模板路径
       inject: true, // 是否将js放在body的末尾
     }),
+    // 解决mqtt在webpack5的Buffer is not defined问题
+    new webpack.ProvidePlugin({
+      Buffer: ["buffer", "Buffer"],
+      process: ["process"],
+    }),
   ],
   resolve: {
     extensions: [".js", ".jsx", ".ts", ".tsx", ".less", ".css", ".wasm"], // 后缀名自动补全

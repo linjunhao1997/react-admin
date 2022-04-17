@@ -32,5 +32,5 @@ export type PowerTreeInfo = {
 };
 export type SearchInfo = {
   title: string | undefined; // 用户名
-  conditions: number | undefined; // 状态
+  disabled: number | undefined; // 状态
 };

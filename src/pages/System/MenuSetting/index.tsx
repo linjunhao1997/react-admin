@@ -25,6 +25,7 @@ import {
   ToolOutlined,
   DeleteOutlined,
   PlusCircleOutlined,
+  ExclamationOutlined,
 } from "@ant-design/icons";
 import { cloneDeep } from "lodash";
 
@@ -158,7 +159,7 @@ function MenuSettingContainer(props: Props) {
       } else {
         if (data) {
           form.setFieldsValue({
-            formConditions: data.conditions,
+            formDisabled: data.disabled,
             formDesc: data.desc,
             formIcon: data.icon,
             formSorts: data.sorts,
@@ -193,7 +194,7 @@ function MenuSettingContainer(props: Props) {
         parent: Number(treeSelect.id) || null,
         sorts: values.formSorts,
         desc: values.formDesc,
-        conditions: values.formConditions,
+        disabled: values.formDisabled,
       };
       setModal({
         modalLoading: true,
@@ -201,7 +202,7 @@ function MenuSettingContainer(props: Props) {
       if (modal.operateType === "add") {
         try {
           const res = await dispatch.sys.addMenu(params);
-          if (res && res.status === 200) {
+          if (res && res.success) {
             message.success("添加成功");
             getData();
             onClose();
@@ -310,10 +311,10 @@ function MenuSettingContainer(props: Props) {
     },
     {
       title: "状态",
-      dataIndex: "conditions",
-      key: "conditions",
+      dataIndex: "disabled",
+      key: "disabled",
       render: (v: number) =>
-        v === 1 ? (
+        v === 0 ? (
           <span style={{ color: "green" }}>启用</span>
         ) : (
           <span style={{ color: "red" }}>禁用</span>
@@ -394,7 +395,7 @@ function MenuSettingContainer(props: Props) {
           url: item.url,
           desc: item.desc,
           sorts: item.sorts,
-          conditions: item.conditions,
+          disabled: item.disabled,
           serial: index + 1,
         };
       });
@@ -403,6 +404,7 @@ function MenuSettingContainer(props: Props) {
     const { node, dragNode, dropPosition, dropToGap, event, dragNodesKeys } =
       info;
     let targetMenus: [] = [];
+    console.log(dropPosition);
     const loop = (data, key) => {
       for (let i = 0; i < data.length; i++) {
         if (data[i].key === key) {
@@ -421,20 +423,22 @@ function MenuSettingContainer(props: Props) {
     targetMenus.splice(dragNode.index, 1);
     let resultMenus: Menu[] = [];
     if (!dropToGap) {
+      // 针对第一个
       targetMenus.unshift(drag);
       resultMenus = targetMenus;
     } else if (dropPosition == length) {
+      // 针对最后一个
       resultMenus = targetMenus.concat(drag);
     } else {
-      let position;
+      targetMenus.unshift(drag);
+      resultMenus = targetMenus;
 
-      if (dropPosition == length - 1) {
-        position = dropPosition - 1;
-      } else {
-        position = dropPosition;
-      }
+      const position = dropPosition;
+
       const a1 = targetMenus.slice(0, position);
+      console.log("a1", a1);
       const a2 = targetMenus.slice(position);
+      console.log("a2", a2);
       resultMenus = a1
         .concat(drag)
         .concat(a2)
@@ -510,7 +514,7 @@ function MenuSettingContainer(props: Props) {
         onCancel={onClose}
         confirmLoading={modal.modalLoading}
       >
-        <Form form={form} initialValues={{ formConditions: 1 }}>
+        <Form form={form} initialValues={{ formDisabled: 0 }}>
           <Form.Item
             label="菜单名"
             name="formTitle"
@@ -526,10 +530,16 @@ function MenuSettingContainer(props: Props) {
             />
           </Form.Item>
           <Form.Item
-            label="菜单链接"
+            label="菜单模块"
             name="formUrl"
             {...formItemLayout}
             rules={[{ required: true, whitespace: true, message: "必填" }]}
+            extra={
+              <span>
+                <ExclamationOutlined />
+                只能已创建时的为准
+              </span>
+            }
           >
             <Input
               placeholder="请输入菜单链接"
@@ -564,15 +574,15 @@ function MenuSettingContainer(props: Props) {
           </Form.Item>
           <Form.Item
             label="状态"
-            name="formConditions"
+            name="formDisabled"
             {...formItemLayout}
             rules={[{ required: true, message: "请选择状态" }]}
           >
             <Select disabled={modal.operateType === "see"}>
-              <Option key={1} value={1}>
+              <Option key={0} value={0}>
                 启用
               </Option>
-              <Option key={-1} value={-1}>
+              <Option key={1} value={1}>
                 禁用
               </Option>
             </Select>

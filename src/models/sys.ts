@@ -89,7 +89,7 @@ export default {
      */
     async addMenu(params: MenuParam) {
       try {
-        const res: Res = await axios.post("/api/addmenu", params);
+        const res: Resp = await axios.post("/api/v1/sysMenus", params);
         return res;
       } catch (err) {
         message.error("网络错误，请重试");
@@ -156,17 +156,18 @@ export default {
     },
 
     /** 获取所有角色 **/
-    async getAllRoles(): Promise<Resp | undefined> {
+    async getAllRoles(): Promise<Role[]> {
+      let roles: Role[] = [];
       try {
         const res: Resp = await axios.get("/api/v1/sysRoles");
         if (res && res.success) {
           dispatch.sys.reducerSetRoles(res.data);
         }
-        return res;
+        roles = res.data;
       } catch (err) {
         message.error("网络错误，请重试");
       }
-      return;
+      return roles;
     },
     /**
      * 添加权限
@@ -217,7 +218,7 @@ export default {
       pageNum: number;
       pageSize: number;
       title?: string;
-      conditions?: number;
+      disabled?: number;
     }) {
       try {
         const res: Res = await axios.get(
@@ -361,7 +362,7 @@ export default {
       pageNum: number;
       pageSize: number;
       username?: string;
-      conditions?: number;
+      disabled?: number;
     }) {
       try {
         const res: Res = await axios.get(

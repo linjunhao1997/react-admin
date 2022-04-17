@@ -6,7 +6,8 @@ interface Result {
 }
 
 export const getTableData =
-  (url: string) =>({ current, pageSize, sorter }, formData: any): Promise<Result> => {
+  (url: string) =>
+  ({ current, pageSize, sorter }, formData: any): Promise<Result> => {
     const like = {};
     Object.entries(formData).forEach(([key, value]) => {
       if (value) {
@@ -51,7 +52,7 @@ export const getTableData =
     };
     return axios.post(url, data).then((resp) => {
       console.log(resp);
-      return{
+      return {
         total: resp.data.total,
         list: resp.data.list,
       };

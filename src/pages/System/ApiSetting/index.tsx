@@ -43,12 +43,12 @@ function ApiSettingContainer(props: Props): JSX.Element {
   const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
   const [record, setRecord] = useState<any>(null);
 
-  const [form] = Form.useForm();
+  const [formForSearch] = Form.useForm();
   const { tableProps, search, refresh } = useAntdTable(
     getTableData(`/api/v1/sysApis/_search`),
     {
       defaultPageSize: 10,
-      form,
+      form: formForSearch,
     }
   );
   const { pagination } = tableProps as any;
@@ -70,7 +70,7 @@ function ApiSettingContainer(props: Props): JSX.Element {
   );
   const advanceSearchForm = (
     <div>
-      <Form form={form}>
+      <Form form={formForSearch}>
         <Row gutter={24}>
           <Col span={8}>
             <Form.Item label="url" name="url">
@@ -102,16 +102,19 @@ function ApiSettingContainer(props: Props): JSX.Element {
 
   const searchForm = (
     <div style={{ marginBottom: 16 }}>
-      <Form form={form} style={{ display: "flex", justifyContent: "flex-end" }}>
-        <Form.Item name="enable">
+      <Form
+        form={formForSearch}
+        style={{ display: "flex", justifyContent: "flex-end" }}
+      >
+        <Form.Item name="disabled">
           <Select
             style={{ width: 120, marginRight: 16 }}
             defaultValue=""
             onChange={submit}
           >
             <Option value="">全部</Option>
-            <Option value="1">启用</Option>
-            <Option value="-1">禁用</Option>
+            <Option value="0">启用</Option>
+            <Option value="1">禁用</Option>
           </Select>
         </Form.Item>
         <Form.Item name="url">
@@ -147,6 +150,8 @@ function ApiSettingContainer(props: Props): JSX.Element {
     modalShow: false,
     modalLoading: false,
   });
+
+  const [formForModal] = Form.useForm();
   /**
    * 添加/修改/查看 模态框出现
    * @param data 当前选中的那条数据
@@ -165,11 +170,11 @@ function ApiSettingContainer(props: Props): JSX.Element {
     setTimeout(() => {
       if (type === "add") {
         // 新增，需重置表单各控件的值
-        form.resetFields();
+        formForModal.resetFields();
       } else if (data) {
         // 查看或修改，需设置表单各控件的值为当前所选中行的数据
-        form.setFieldsValue({
-          formConditions: data.conditions,
+        formForModal.setFieldsValue({
+          formDisabled: data.disabled,
           formDesc: data.desc,
           formName: data.name,
           formUrl: data.url,
@@ -185,7 +190,7 @@ function ApiSettingContainer(props: Props): JSX.Element {
       return;
     }
     try {
-      const values = await form.validateFields();
+      const values = await formForModal.validateFields();
       setModal({
         modalLoading: true,
       });
@@ -194,7 +199,7 @@ function ApiSettingContainer(props: Props): JSX.Element {
         desc: values.formDesc,
         url: values.formUrl,
         method: values.formMethod,
-        conditions: values.formConditions,
+        disabled: values.formDisabled,
       };
       if (modal.operateType === "add") {
         // 新增
@@ -293,10 +298,10 @@ function ApiSettingContainer(props: Props): JSX.Element {
     },
     {
       title: "状态",
-      dataIndex: "conditions",
-      key: "conditions",
+      dataIndex: "disabled",
+      key: "disabled",
       render: (v: number) =>
-        v === 1 ? (
+        v === 0 ? (
           <span style={{ color: "green" }}>启用</span>
         ) : (
           <span style={{ color: "red" }}>禁用</span>
@@ -346,9 +351,9 @@ function ApiSettingContainer(props: Props): JSX.Element {
         confirmLoading={modal.modalLoading}
       >
         <Form
-          form={form}
+          form={formForModal}
           initialValues={{
-            formConditions: 1,
+            formDisabled: 0,
           }}
         >
           <Form.Item
@@ -398,15 +403,15 @@ function ApiSettingContainer(props: Props): JSX.Element {
           </Form.Item>
           <Form.Item
             label="状态"
-            name="formConditions"
+            name="formDisabled"
             {...formItemLayout}
             rules={[{ required: true, message: "请选择状态" }]}
           >
             <Select disabled={modal.operateType === "see"}>
-              <Option key={1} value={1}>
+              <Option key={0} value={0}>
                 启用
               </Option>
-              <Option key={-1} value={-1}>
+              <Option key={1} value={1}>
                 禁用
               </Option>
             </Select>

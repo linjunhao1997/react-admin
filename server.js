@@ -1,4 +1,61 @@
 /** 用于开发环境的服务启动 **/
+/*var mqtt = require("mqtt");
+
+var clientId = "mqttjs_" + Math.random().toString(16).substr(2, 8);
+
+// This sample should be run in tandem with the aedes_server.js file.
+// Simply run it:
+// $ node aedes_server.js
+//
+// Then run this file in a separate console:
+// $ node websocket_sample.js
+//
+var host = "ws://192.168.100.100:8083/mqtt";
+
+var options = {
+  keepalive: 30,
+  clientId: clientId,
+  protocolId: "Hook",
+  protocolVersion: 4,
+  clean: true,
+  reconnectPeriod: 1000,
+  connectTimeout: 30 * 1000,
+  will: {
+    topic: "WillMsg",
+    payload: "Connection Closed abnormally..!",
+    qos: 0,
+    retain: false,
+  },
+  rejectUnauthorized: false,
+};
+
+console.log("connecting mqtt client");
+var client = mqtt.connect(host, options);
+
+client.on("error", function (err) {
+  console.log(err);
+  client.end();
+});
+
+client.on("connect", function () {
+  console.log("client connected:" + clientId);
+  client.subscribe("topic", { qos: 0 });
+  client.publish("topic", "wss secure connection demo...!", {
+    qos: 0,
+    retain: false,
+  });
+});
+
+client.on("message", function (topic, message, packet) {
+  console.log(
+    "Received Message:= " + message.toString() + "\nOn topic:= " + topic
+  );
+});
+
+client.on("close", function () {
+  console.log(clientId + " disconnected");
+});*/
+
 const path = require("path"); // 获取绝对路径有用
 const express = require("express"); // express服务器端框架
 const env = process.env.NODE_ENV; // 模式（dev开发环境，production生产环境）

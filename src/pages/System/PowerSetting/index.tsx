@@ -197,7 +197,7 @@ function PowerSettingContainer(props: Props) {
       } else {
         // 查看或修改，需设置表单各控件的值为当前所选中行的数据
         form.setFieldsValue({
-          formConditions: data?.conditions,
+          formDisabled: data?.disabled,
           formDesc: data?.desc,
           formCode: data?.code,
           formSorts: data?.sorts,
@@ -230,7 +230,7 @@ function PowerSettingContainer(props: Props) {
         menuId: treeSelect.id || 0,
         sorts: values.formSorts,
         desc: values.formDesc,
-        conditions: values.formConditions,
+        disabled: values.formDisabled,
         roleIds: values.formRoleIds,
       };
       setModal({
@@ -361,10 +361,10 @@ function PowerSettingContainer(props: Props) {
     },
     {
       title: "状态",
-      dataIndex: "conditions",
-      key: "conditions",
+      dataIndex: "disabled",
+      key: "disabled",
       render: (v: number) =>
-        v === 1 ? (
+        v === 0 ? (
           <span style={{ color: "green" }}>启用</span>
         ) : (
           <span style={{ color: "red" }}>禁用</span>
@@ -439,7 +439,7 @@ function PowerSettingContainer(props: Props) {
         code: item.code,
         desc: item.desc,
         sorts: item.sorts,
-        conditions: item.conditions,
+        disabled: item.disabled,
         roleIds: item.roles.map((item) => item.id),
         serial: index + 1,
       };
@@ -498,7 +498,7 @@ function PowerSettingContainer(props: Props) {
         onCancel={onClose}
         confirmLoading={modal.modalLoading}
       >
-        <Form form={form} initialValues={{ formConditions: 1 }}>
+        <Form form={form} initialValues={{ formDisabled: 0 }}>
           <Form.Item
             label="功能名"
             name="formTitle"
@@ -554,15 +554,15 @@ function PowerSettingContainer(props: Props) {
           </Form.Item>
           <Form.Item
             label="状态"
-            name="formConditions"
+            name="formDisabled"
             {...formItemLayout}
             rules={[{ required: true, message: "请选择状态" }]}
           >
             <Select disabled={modal.operateType === "see"}>
-              <Option key={1} value={1}>
+              <Option key={0} value={0}>
                 启用
               </Option>
-              <Option key={-1} value={-1}>
+              <Option key={0} value={0}>
                 禁用
               </Option>
             </Select>

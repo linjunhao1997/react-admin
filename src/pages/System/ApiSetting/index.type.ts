@@ -15,7 +15,7 @@ export type TableRecordData = {
   desc: string; // 描述
   url: string; // url
   method: string; // 请求方式
-  conditions: number; // 是否启用 1启用 -1禁用
+  disabled: number; // 是否启用 1启用 -1禁用
 };
 
 export type Page = {
@@ -35,7 +35,7 @@ export type ModalType = {
 
 export type SearchInfo = {
   username: string | undefined; // 用户名
-  conditions: number | undefined; // 状态
+  disabled: number | undefined; // 状态
 };
 
 export type RoleTreeInfo = {

@@ -16,7 +16,7 @@ export type TableRecordData = {
   phone: string | number; // 手机
   email: string; // 邮箱
   desc: string; // 描述
-  conditions: number; // 是否启用 1启用 -1禁用
+  disabled: number; // 是否启用 1启用 -1禁用
   control?: number; // 控制，传入的ID
   roles?: Role[]; // 拥有的所有功能ID
 };
@@ -38,7 +38,7 @@ export type ModalType = {
 
 export type SearchInfo = {
   username: string | undefined; // 用户名
-  conditions: number | undefined; // 状态
+  disabled: number | undefined; // 状态
 };
 
 export type RoleTreeInfo = {

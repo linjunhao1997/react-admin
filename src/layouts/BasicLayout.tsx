@@ -42,6 +42,7 @@ const [
   PowerSetting,
   MenuSetting,
   ApiSetting,
+  MQTT,
 ] = [
   () => import(`../pages/ErrorPages/404`),
   () => import(`../pages/ErrorPages/401`),
@@ -51,6 +52,7 @@ const [
   () => import(`../pages/System/PowerSetting`),
   () => import(`../pages/System/MenuSetting`),
   () => import(`../pages/System/ApiSetting`),
+  () => import(`../components/Hook`),
 ].map((item) => {
   return loadable(item as any, {
     fallback: <Loading />,
@@ -63,6 +65,7 @@ const [
 import { RootState, Dispatch } from "@/store";
 import { Menu } from "@/models/index.type";
 import { History } from "history";
+import HookMqtt from "@/components/Hook";
 
 type Props = {
   history: History;
@@ -182,6 +185,7 @@ function BasicLayoutCom(props: Props): JSX.Element {
                   path="/system/apisetting"
                   render={(props) => onEnter(ApiSetting, props)}
                 />
+                <Route exact path="/system/mqtt" component={MQTT} />
                 <Route exact path="/nopower" component={NoPower} />
                 <Route component={NotFound} />
               </CacheSwitch>

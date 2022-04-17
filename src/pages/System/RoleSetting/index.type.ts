@@ -40,7 +40,7 @@ export type PowerTreeInfo = {
 // 搜索相关参数
 export type SearchInfo = {
   title: string | undefined; // 用户名
-  conditions: number | undefined; // 状态
+  disabled: number | undefined; // 状态
 };
 
 export type Props = {
