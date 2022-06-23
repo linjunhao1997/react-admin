@@ -402,9 +402,8 @@ function MenuSettingContainer(props: Props) {
       });
   }, [data, treeSelect.id]);
   const onDrop = (info: any) => {
-    const { node, dragNode, dropPosition, dropToGap, event } = info;
-    let targetMenus: [] = [];
-    console.log(dropPosition);
+    const { dragNode, dropPosition, dropToGap } = info;
+    let targetMenus: Menu[] = [];
     const loop = (data: any, key: string) => {
       for (let i = 0; i < data.length; i++) {
         if (data[i].key === key) {
@@ -415,27 +414,28 @@ function MenuSettingContainer(props: Props) {
         }
       }
     };
+    //     0          1       2          3       4
+    // 0 功能管理 1 用户管理 2 菜单管理 3 角色管理 4 接口管理 5
     const targetData = cloneDeep(sourceData);
     loop(targetData, dragNode.key);
-    const length = targetMenus.length;
-    const drag = targetMenus[dragNode.index];
+    const drag: Menu = targetMenus[dragNode.index];
     targetMenus.splice(dragNode.index, 1);
-    let resultMenus: Menu[];
+    let resultMenus: Menu[] = [];
     if (!dropToGap) {
-      // 针对第一个
+      // 针对父子级的空隙
       targetMenus.unshift(drag);
       resultMenus = targetMenus;
-    } else if (dropPosition == length) {
-      // 针对最后一个
-      resultMenus = targetMenus.concat(drag);
+    } else if (dropPosition === drag.index || dropPosition === 1 + drag.index) {
+      // 忽略
     } else {
-      targetMenus.unshift(drag);
-      resultMenus = targetMenus;
-
-      const position = dropPosition;
-
+      let position: number;
+      if (dragNode.index < dropPosition) {
+        // 因为在前边时由于splice删了一个所以要减1
+        position = dropPosition - 1;
+      } else {
+        position = dropPosition;
+      }
       const a1 = targetMenus.slice(0, position);
-      console.log("a1", a1);
       const a2 = targetMenus.slice(position);
       resultMenus = a1
         .concat(drag)
