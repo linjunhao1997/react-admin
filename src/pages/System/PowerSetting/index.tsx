@@ -81,7 +81,7 @@ function PowerSettingContainer(props: Props) {
   const dispatch = useDispatch<Dispatch>();
   const p = useSelector((state: RootState) => state.app.powersCode);
   const roles = useSelector((state: RootState) => state.sys.roles);
-  const userinfo = useSelector((state: RootState) => state.app.userinfo);
+  const userInfo = useSelector((state: RootState) => state.app.userInfo);
 
   const [form] = Form.useForm();
 
@@ -104,7 +104,7 @@ function PowerSettingContainer(props: Props) {
 
   // 生命周期 - 首次加载组件时触发
   useMount(() => {
-    if (userinfo.menus.length === 0) {
+    if (userInfo.menus.length === 0) {
       dispatch.sys.getMenus();
     }
     dispatch.sys.getAllRoles();
@@ -296,37 +296,13 @@ function PowerSettingContainer(props: Props) {
     }
   };
 
-  /**
-   * 批量更新roles
-   * @param id 当前这个功能的id
-   * @param roleIds 选中的角色的id们，要把当前功能赋给这些角色
-   *  **/
-  const setPowersByRoleIds = (id: number, roleIds: number[]) => {
-    const params = roles.map((item) => {
-      const powersTemp = new Set(
-        item.menus.reduce((a, b) => [...a, ...(b.powers || [])], [])
-      );
-      if (roleIds.includes(item.id)) {
-        powersTemp.add(id);
-      } else {
-        powersTemp.delete(id);
-      }
-      return {
-        id: item.id,
-        menus: item.menus.map((item) => item.id),
-        powers: Array.from(powersTemp),
-      };
-    });
-    dispatch.sys.setPowersByRoleIds(params);
-  };
-
   // ==================
   // 属性 和 memo
   // ==================
 
   // 处理原始数据，将原始数据处理为层级关系
   const sourceData = useMemo(() => {
-    const d: Menu[] = cloneDeep(userinfo.menus);
+    const d: Menu[] = cloneDeep(userInfo.menus);
     d.forEach((item: Menu & { key: string }) => {
       item.key = String(item.id);
     });
@@ -335,7 +311,7 @@ function PowerSettingContainer(props: Props) {
       return a.sorts - b.sorts;
     });
     return dataToJson(null, d) || [];
-  }, [userinfo.menus, dataToJson]);
+  }, [userInfo.menus, dataToJson]);
 
   // 构建表格字段
   const tableColumns = [

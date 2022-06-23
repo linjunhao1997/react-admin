@@ -1,8 +1,4 @@
-import {
-  Props,
-  Res,
-  TableRecordData,
-} from "@/pages/System/RoleSetting/index.type";
+import { Props, TableRecordData } from "@/pages/System/RoleSetting/index.type";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch, RootState } from "@/store";
 import { Button, Form, Input, message, Modal, Select, Table, Tag } from "antd";
@@ -37,14 +33,10 @@ const mapTag = {
 
 function RoleSettingContainer(props: Props): JSX.Element {
   const dispatch = useDispatch<Dispatch>();
-  const userinfo = useSelector((state: RootState) => state.app.userinfo);
   const p = useSelector((state: RootState) => state.app.powersCode);
   const powerTreeData = useSelector(
     (state: RootState) => state.sys.powerTreeData
   );
-  const sys = useSelector((state: RootState) => state.sys);
-  console.log("state.sys", sys);
-
   const { toggleMenu, ...menuProps } = useMenuState();
   const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
   const [record, setRecord] = useState<any>(null);
@@ -259,7 +251,7 @@ function RoleSettingContainer(props: Props): JSX.Element {
     setLoading(true);
     try {
       const res = await dispatch.sys.delRole({ id });
-      if (res && res.success) {
+      if (res?.success) {
         message.success("删除成功");
         refresh();
         dispatch.app.updateUserInfo();
@@ -311,10 +303,8 @@ function RoleSettingContainer(props: Props): JSX.Element {
 
     setPower({ treeOnOkLoading: true });
     try {
-      const res: Resp | undefined = await dispatch.sys.setPowersByRoleId(
-        params
-      );
-      if (res && res.success) {
+      const res = await dispatch.sys.setPowersByRoleId(params);
+      if (res?.success) {
         refresh();
         dispatch.app.updateUserInfo();
         onPowerTreeClose();

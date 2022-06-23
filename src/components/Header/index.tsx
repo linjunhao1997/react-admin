@@ -39,7 +39,7 @@ interface Element {
 
 interface Props {
   collapsed: boolean; // 菜单的状态
-  userinfo: UserInfo; // 用户信息
+  userInfo: UserInfo; // 用户信息
   onToggle: () => void; // 菜单收起与展开状态切换
   onLogout: () => void; // 退出登录
 }
@@ -88,7 +88,8 @@ export default function HeaderCom(props: Props): JSX.Element {
     [props]
   );
 
-  const u = props.userinfo.userBasicInfo;
+  const u = props.userInfo.userBasicInfo;
+  console.log("u", u);
   return (
     <Header className="header">
       <Tooltip

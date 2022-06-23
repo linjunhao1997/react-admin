@@ -36,7 +36,7 @@ const { confirm } = Modal;
 
 function ApiSettingContainer(props: Props): JSX.Element {
   const dispatch = useDispatch<Dispatch>();
-  const userinfo = useSelector((state: RootState) => state.app.userinfo);
+  const userInfo = useSelector((state: RootState) => state.app.userInfo);
   const p = useSelector((state: RootState) => state.app.powersCode);
 
   const { toggleMenu, ...menuProps } = useMenuState();

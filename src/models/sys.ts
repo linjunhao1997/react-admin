@@ -277,14 +277,8 @@ export default {
     /**
      * 删除角色
      * **/
-    async delRole(params: { id: number }) {
-      try {
-        const res: Res = await axios.delete(`/api/v1/sysRoles/${params.id}`);
-        return res;
-      } catch (err) {
-        message.error("网络错误，请重试");
-      }
-      return;
+    async delRole(params: { id: number }): Promise<Resp> {
+      return await axios.delete(`/api/v1/sysRoles/${params.id}`);
     },
 
     /**
@@ -326,13 +320,8 @@ export default {
       id: number;
       menuIds: number[];
       powerIds: number[];
-    }) {
-      try {
-        return await axios.patch(`/api/v1/sysRoles/${params.id}`, params);
-      } catch (err) {
-        message.error("网络错误，请重试");
-      }
-      return;
+    }): Promise<Resp> {
+      return await axios.patch(`/api/v1/sysRoles/${params.id}`, params);
     },
 
     /**
@@ -345,14 +334,8 @@ export default {
         menus: number[];
         powers: number[];
       }[]
-    ) {
-      try {
-        const res: Res = await axios.post("/api/setPowersByRoleIds", params);
-        return res;
-      } catch (err) {
-        message.error("网络错误，请重试");
-      }
-      return;
+    ): Promise<Res> {
+      return await axios.post("/api/setPowersByRoleIds", params);
     },
 
     /**
@@ -431,14 +414,8 @@ export default {
       return;
     },
 
-    async onSelf() {
-      try {
-        const res: Resp = await axios.get("/api/v1/sysUsers/self");
-        return res;
-      } catch (err) {
-        console.error(err);
-      }
-      return;
+    async onSelf(): Promise<Resp> {
+      return await axios.get("/api/v1/sysUsers/self");
     },
 
     /**

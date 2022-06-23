@@ -77,7 +77,7 @@ type Props = {
 // ==================
 function BasicLayoutCom(props: Props): JSX.Element {
   const dispatch = useDispatch<Dispatch>();
-  const userinfo = useSelector((state: RootState) => state.app.userinfo);
+  const userInfo = useSelector((state: RootState) => state.app.userInfo);
   const [collapsed, setCollapsed] = useState(false); // 菜单栏是否收起
 
   // 退出登录
@@ -95,19 +95,17 @@ function BasicLayoutCom(props: Props): JSX.Element {
   const checkRouterPower = useCallback(
     (pathname: string) => {
       let menus: Menu[] = [];
-      if (userinfo.menus && userinfo.menus.length) {
-        menus = userinfo.menus;
-      } else if (sessionStorage.getItem("userinfo")) {
+      if (userInfo.menus && userInfo.menus.length) {
+        menus = userInfo.menus;
+      } else if (sessionStorage.getItem("userInfo")) {
         menus = JSON.parse(
-          tools.uncompile(sessionStorage.getItem("userinfo") || "[]")
+          tools.uncompile(sessionStorage.getItem("userInfo") || "[]")
         ).menus;
       }
       const m: string[] = menus.map((item) => item.url); // 当前用户拥有的所有菜单
-
-      console.log("collapsed", collapsed);
       return m.includes(pathname);
     },
-    [userinfo]
+    [userInfo]
   );
 
   // 切换路由时触发
@@ -128,7 +126,7 @@ function BasicLayoutCom(props: Props): JSX.Element {
   return (
     <Layout className="page-basic" hasSider>
       <MenuCom
-        data={userinfo.menus}
+        data={userInfo.menus}
         collapsed={collapsed}
         location={props.location}
         history={props.history}
@@ -137,15 +135,15 @@ function BasicLayoutCom(props: Props): JSX.Element {
       <Layout>
         <Header
           collapsed={collapsed}
-          userinfo={userinfo}
+          userInfo={userInfo}
           onToggle={() => setCollapsed(!collapsed)}
           onLogout={onLogout}
         />
         {/* 普通面包屑导航 */}
-        <Bread menus={userinfo.menus} location={props.location} />
+        <Bread menus={userInfo.menus} location={props.location} />
         {/* Tab方式的导航 */}
         {/* <BreadTab
-          menus={userinfo.menus}
+          menus={userInfo.menus}
           location={props.location}
           history={props.history}
         /> */}

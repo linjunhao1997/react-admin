@@ -67,6 +67,7 @@ import { RootState, Dispatch } from "@/store";
 // ==================
 import "./index.less";
 import { Resp } from "@/models/index.type";
+import { ColumnsType } from "antd/lib/table/interface";
 
 // ==================
 // 本组件
@@ -269,7 +270,7 @@ function MenuSettingContainer(props: Props) {
   }, [data, dataToJson]);
 
   /** 构建表格字段 **/
-  const tableColumns = [
+  const tableColumns: ColumnsType = [
     {
       title: "序号",
       dataIndex: "sorts",
@@ -401,11 +402,10 @@ function MenuSettingContainer(props: Props) {
       });
   }, [data, treeSelect.id]);
   const onDrop = (info: any) => {
-    const { node, dragNode, dropPosition, dropToGap, event, dragNodesKeys } =
-      info;
+    const { node, dragNode, dropPosition, dropToGap, event } = info;
     let targetMenus: [] = [];
     console.log(dropPosition);
-    const loop = (data, key) => {
+    const loop = (data: any, key: string) => {
       for (let i = 0; i < data.length; i++) {
         if (data[i].key === key) {
           targetMenus = data;
@@ -415,13 +415,12 @@ function MenuSettingContainer(props: Props) {
         }
       }
     };
-    console.log("dropToGap", dropToGap);
     const targetData = cloneDeep(sourceData);
     loop(targetData, dragNode.key);
     const length = targetMenus.length;
     const drag = targetMenus[dragNode.index];
     targetMenus.splice(dragNode.index, 1);
-    let resultMenus: Menu[] = [];
+    let resultMenus: Menu[];
     if (!dropToGap) {
       // 针对第一个
       targetMenus.unshift(drag);
@@ -438,7 +437,6 @@ function MenuSettingContainer(props: Props) {
       const a1 = targetMenus.slice(0, position);
       console.log("a1", a1);
       const a2 = targetMenus.slice(position);
-      console.log("a2", a2);
       resultMenus = a1
         .concat(drag)
         .concat(a2)

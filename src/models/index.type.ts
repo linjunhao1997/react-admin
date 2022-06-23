@@ -6,7 +6,7 @@ export interface MenuParam {
   url: string; // 链接路径
   parent: number | null; // 父级ID
   desc: string; // 描述
-  sorts?: number; // 排序编号
+  sorts: number; // 排序编号
   disabled: number; // 状态: 1禁用,0启用
   children?: Menu[]; // 子菜单
   powers?: Power[]; // 菜单功能
@@ -115,7 +115,7 @@ export interface PowerTree extends Menu {
 
 // ./app.js的state类型
 export interface AppState {
-  userinfo: UserInfo;
+  userInfo: UserInfo;
   powersCode: string[];
 }
 

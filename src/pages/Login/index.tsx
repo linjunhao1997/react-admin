@@ -20,15 +20,6 @@ import LogoImg from "@/assets/logo.png";
 // 类型声明
 // ==================
 import { RootState, Dispatch } from "@/store";
-import {
-  Role,
-  Menu,
-  Power,
-  UserBasicInfo,
-  Res,
-  LoginRes,
-  Resp,
-} from "@/models/index.type";
 import { CheckboxChangeEvent } from "antd/lib/checkbox";
 
 import { History } from "history";
@@ -48,14 +39,13 @@ type Props = {
 // CSS
 // ==================
 import "./index.less";
+import { UserInfo } from "@/models/index.type";
 
 // ==================
 // 本组件
 // ==================
 function LoginContainer(props: Props): JSX.Element {
   const dispatch = useDispatch<Dispatch>();
-  const p = useSelector((state: RootState) => state.app.powersCode);
-
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false); // 是否正在登录中
   const [rememberPassword, setRememberPassword] = useState(false); // 是否记住密码
@@ -91,59 +81,25 @@ function LoginContainer(props: Props): JSX.Element {
    * **/
   const loginIn = useCallback(
     async (username, password) => {
-      let userBasicInfo: UserBasicInfo | null = null;
-      let roles: Role[] = [];
-      const menus: Menu[] = [];
-      const powers: Power[] = [];
+      let latestUserInfo;
       try {
         /** 1.登录 （返回信息中有该用户拥有的角色id） **/
-        const res1: LoginRes | undefined = await dispatch.app.onLogin({
+        const loginRes = await dispatch.app.onLogin({
           username,
           password,
         });
-        sessionStorage.setItem("token", res1?.token || "");
-        const res2: Resp | undefined = await dispatch.sys.onSelf();
-
-        userBasicInfo = res2?.data;
-
-        /** 2.获取角色信息 **/
-        roles = res2?.data.roles;
-        /** 3.获取菜单信息 **/
-        const menuInfo = roles.reduce((a, b) => [...a, ...b.menus], []);
-        const menuMap = {};
-        menuInfo.forEach((item) => {
-          menuMap[item?.id] = item;
-        });
-        const menuIds = Array.from(new Set(menuInfo.map((item) => item.id)));
-        menuIds.forEach((id) => {
-          if (menuMap[id]) {
-            menus.push(menuMap[id]);
-          }
-        });
-        console.log("menus:", menus);
-        /** 4.根据权限id，获取权限信息 **/
-        const powerInfo = roles.reduce((a, b) => [...a, ...b.powers], []);
-        const powerMap = {};
-        powerInfo.forEach((item) => {
-          powerMap[item?.id] = item;
-        });
-        const powerIds = Array.from(new Set(powerInfo.map((item) => item.id)));
-        powerIds.forEach((id) => {
-          if (powerMap[id]) {
-            powers.push(powerMap[id]);
-          }
-        });
-        console.log("powers:", powers);
+        sessionStorage.setItem("token", loginRes?.token || "");
+        latestUserInfo = await dispatch.app.updateUserInfo();
       } catch (e) {
         console.log("error", e);
         return {
           status: 400,
-          data: { userBasicInfo: null, roles, menus, powers },
+          data: latestUserInfo,
         };
       }
-      return { status: 200, data: { userBasicInfo, roles, menus, powers } };
+      return { status: 200, data: latestUserInfo };
     },
-    [dispatch.sys, dispatch.app]
+    [dispatch.app]
   );
 
   // 用户提交登录
@@ -152,7 +108,7 @@ function LoginContainer(props: Props): JSX.Element {
       const values = await form.validateFields();
       setLoading(true);
       const res = await loginIn(values.username, values.password);
-      if (res && res.status === 200) {
+      if (res?.status === 200) {
         message.success("登录成功");
         if (rememberPassword) {
           localStorage.setItem(
@@ -167,11 +123,10 @@ function LoginContainer(props: Props): JSX.Element {
         }
         /** 将这些信息加密后存入sessionStorage,并存入store **/
         sessionStorage.setItem(
-          "userinfo",
+          "userInfo",
           tools.compile(JSON.stringify(res.data))
         );
-        console.log("userinfo", res.data);
-        await dispatch.app.setUserInfo(res.data);
+        await dispatch.app.setUserInfo(res.data as UserInfo);
         props.history.replace("/"); // 跳转到主页
       } else {
         setLoading(false);

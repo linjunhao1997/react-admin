@@ -38,22 +38,22 @@ import { RootState, Dispatch } from "@/store";
 // ==================
 function RouterCom(props: any): JSX.Element {
   const dispatch = useDispatch<Dispatch>();
-  const userinfo = useSelector((state: RootState) => state.app.userinfo);
+  const userInfo = useSelector((state: RootState) => state.app.userInfo);
 
   useEffect(() => {
-    const userTemp = sessionStorage.getItem("userinfo");
+    const userTemp = sessionStorage.getItem("userInfo");
     /**
      * sessionStorage中有user信息，但store中没有
      * 说明刷新了页面，需要重新同步user数据到store
      * **/
-    if (userTemp && !userinfo.userBasicInfo) {
+    if (userTemp && !userInfo.userBasicInfo) {
       dispatch.app.setUserInfo(JSON.parse(tools.uncompile(userTemp)));
     }
-  }, [dispatch.app, userinfo.userBasicInfo]);
+  }, [dispatch.app, userInfo.userBasicInfo]);
 
   /** 跳转到某个路由之前触发 **/
   const onEnter = useCallback((Component, props) => {
-    const userTemp = sessionStorage.getItem("userinfo");
+    const userTemp = sessionStorage.getItem("userInfo");
     if (userTemp) {
       return <Component {...props} />;
     }
